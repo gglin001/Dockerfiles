@@ -10,8 +10,8 @@ on:
       - master
 
 jobs:
-  build_py_wheel:
-    runs-on: self-hosted
+  build:
+    runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v2

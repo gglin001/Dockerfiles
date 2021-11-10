@@ -1,0 +1,21 @@
+name: build
+
+on:
+  pull_request:
+    branches:
+      - master
+
+  push:
+    branches:
+      - master
+
+jobs:
+  build_py_wheel:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          docker build -t llvm_build dockerfile/

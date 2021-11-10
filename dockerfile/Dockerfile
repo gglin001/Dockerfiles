@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 RUN apt update
 
-RUN apt install -y git vim wget  bash-completion
+RUN apt install -y git vim wget bash-completion apt-utils
 
 RUN apt install -y lsb-release wget software-properties-common
 RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"

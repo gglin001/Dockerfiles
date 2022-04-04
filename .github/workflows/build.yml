@@ -16,6 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: build
+      - name: echo
         run: |
-          docker build -t llvm_build dockerfile/
+          echo hello

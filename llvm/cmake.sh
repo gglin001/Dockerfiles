@@ -30,6 +30,12 @@ cmake --no-warn-unused-cli \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang-13 \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++-13 \
-    -H/root/llvm-project/llvm \
+    -S/root/llvm-project/llvm \
     -B/root/llvm-project/build \
     -G Ninja
+
+cmake --build \
+    /root/llvm-project/build \
+    --config Debug \
+    --target all \
+    -j $(grep -c ^processor /proc/cpuinfo) --

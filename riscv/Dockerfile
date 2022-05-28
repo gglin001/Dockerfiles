@@ -59,5 +59,19 @@ RUN ./configure --prefix=$RISCV/target
 RUN make -j `nproc`
 RUN make install
 
+# qemu
+ENV QEMU=/opt/qemu
+WORKDIR /home
+RUN git clone https://github.com/qemu/qemu -b v7.0.0
+RUN apt install ninja-build pkg-config libglib2.0-dev libpixman-1-dev -y
+WORKDIR /home/qemu
+# RUN git submodule update --init --recursive
+RUN mkdir build
+WORKDIR /home/qemu/build
+RUN ../configure --prefix=$QEMU
+RUN make -j`nproc`
+RUN make install
+
 # show installed commands
 RUN ls -l $RISCV/bin
+RUN ls -l $QEMU/bin

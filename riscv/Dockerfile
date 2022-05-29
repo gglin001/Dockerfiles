@@ -72,6 +72,26 @@ RUN ../configure --prefix=$QEMU
 RUN make -j`nproc`
 RUN make install
 
+# llvm
+ENV LLVM=/opt/llvm
+WORKDIR /home
+RUN git clone https://github.com/llvm/llvm-project -b llvmorg-14.0.4 --single-branch --depth=1
+RUN apt install cmake -y
+WORKDIR /home/llvm-project
+RUN cmake -S llvm -B build -G Ninja \
+    -DCMAKE_INSTALL_PREFIX=$LLVM \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_TARGETS_TO_BUILD="RISCV" \
+    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" \
+    -DLLVM_DEFAULT_TARGET_TRIPLE="riscv64-unknown-elf"
+RUN cmake --build build -j$(nproc)
+RUN cmake --build build --target install -j$(nproc)
+
+# update PATH
+ENV PATH="$RISCV/bin:$QEMU/bin:$LLVM/bin:${PATH}"
+
+WORKDIR /home
 # show installed commands
 RUN ls -l $RISCV/bin
 RUN ls -l $QEMU/bin
+RUN ls -l $LLVM/bin

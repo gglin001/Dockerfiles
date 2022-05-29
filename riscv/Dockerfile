@@ -1,6 +1,6 @@
 # docker build -t riscv-dev:latest .
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ENV RISCV=/opt/riscv
 
@@ -89,6 +89,8 @@ RUN cmake --build build --target install -j$(nproc)
 
 # update PATH
 ENV PATH="$RISCV/bin:$QEMU/bin:$LLVM/bin:${PATH}"
+
+RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
 
 WORKDIR /home
 # show installed commands

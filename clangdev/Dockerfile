@@ -25,10 +25,14 @@ RUN conda install clangdev gxx libcxx cmake ninja -y
 # install libs
 RUN conda install glog boost protobuf -y
 
+# install other tools
+RUN conda install bash-completion openssh -y
+
 # set env
 # # TODO use ${CONDA_PREFIX}
 # ENV LD_LIBRARY_PATH="/opt/conda/envs/py38/lib:${LD_LIBRARY_PATH}"
 # ENV LIBRARY_PATH="/opt/conda/envs/py38/lib:${LIBRARY_PATH}"
 RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/conda/envs/py38/lib" >> ~/.bashrc
 RUN echo "export LIBRARY_PATH=$LIBRARY_PATH:/opt/conda/envs/py38/lib" >> ~/.bashrc
+RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
 RUN echo "conda activate py38" >> ~/.bashrc

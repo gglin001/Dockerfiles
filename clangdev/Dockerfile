@@ -1,3 +1,4 @@
+# docker build --no-cache -t clangdev:latest .
 # docker build -t clangdev:latest .
 
 # FROM continuumio/miniconda3

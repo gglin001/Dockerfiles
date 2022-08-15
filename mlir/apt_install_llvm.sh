@@ -16,3 +16,8 @@ apt-get install clang-format clang-tidy clang-tools clang clangd libc++-dev \
 
 # mlir
 apt-get install libmlir-16-dev mlir-16-tools
+apt-get install clang-tools-16
+
+pip install lit
+# "MLIR_DIR": "/usr/lib/llvm-16/lib/cmake/mlir",
+# "LLVM_EXTERNAL_LIT": "/opt/conda/envs/py38/bin/lit",

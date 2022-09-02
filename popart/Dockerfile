@@ -1,3 +1,5 @@
+# docker build -t popart_dev:latest .
+
 FROM ubuntu:18.04
 
 RUN apt-get update
@@ -29,7 +31,7 @@ RUN rm -rf /tmp/cmake-3.17.2
 # -- PIP PACKAGES --
 
 # Protobuf
-RUN pip3 install protobuf>=3.6.1
+RUN pip3 install protobuf==3.19.0
 # ONNX 1.7.0 or compatible.
 RUN pip3 install onnx==1.6.0
 # Pytest and Pytest-forked
@@ -37,10 +39,12 @@ RUN pip3 install pytest
 RUN pip3 install pytest-forked
 # Numpy
 RUN pip3 install numpy
+
+# NOTE: install torch manually
 # Torch 1.7.1
-RUN pip3 install torch==1.7.1
+# RUN pip3 install torch==1.7.1
 # Torch Vision 0.8.2
-RUN pip3 install torchvision==0.8.2
+# RUN pip3 install torchvision==0.8.2
 
 # -- THIRD PARTY LIBRARIES --
 
@@ -70,7 +74,7 @@ RUN ninja install
 # Boost 1.70.0
 WORKDIR /workspace/libs/third-party/
 ENV BOOST_INSTALL_DIR /workspace/libs/third-party/boost_1_70_0/install_dir/
-RUN wget https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.gz
+RUN wget https://sourceforge.net/projects/boost/files/boost/1.70.0/boost_1_70_0.tar.gz
 RUN tar xvfz boost_1_70_0.tar.gz
 RUN rm boost_1_70_0.tar.gz
 WORKDIR /workspace/libs/third-party/boost_1_70_0

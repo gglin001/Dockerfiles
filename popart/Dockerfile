@@ -30,21 +30,25 @@ RUN rm -rf /tmp/cmake-3.17.2
 
 # -- PIP PACKAGES --
 
-# Protobuf
-RUN pip3 install protobuf==3.19.0
-# ONNX 1.7.0 or compatible.
-RUN pip3 install onnx==1.6.0
-# Pytest and Pytest-forked
-RUN pip3 install pytest
-RUN pip3 install pytest-forked
-# Numpy
-RUN pip3 install numpy
+# # Protobuf
+# RUN pip3 install protobuf==3.19.0
+# # ONNX 1.7.0 or compatible.
+# RUN pip3 install onnx==1.6.0
+# # Pytest and Pytest-forked
+# RUN pip3 install pytest
+# RUN pip3 install pytest-forked
+# # Numpy
+# RUN pip3 install numpy
 
 # NOTE: install torch manually
 # Torch 1.7.1
 # RUN pip3 install torch==1.7.1
 # Torch Vision 0.8.2
 # RUN pip3 install torchvision==0.8.2
+
+# NOTE:
+# install pip pkgs in the container
+# pip3 install -r requirements/build.txt
 
 # -- THIRD PARTY LIBRARIES --
 

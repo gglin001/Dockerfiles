@@ -24,7 +24,7 @@ RUN tar xzvf cmake-3.17.2.tar.gz
 RUN rm cmake-3.17.2.tar.gz
 WORKDIR /tmp/cmake-3.17.2
 RUN ./bootstrap --parallel=8 -- -DCMAKE_USE_OPENSSL=OFF
-RUN make -j8
+RUN make -j`nproc`
 RUN make install
 RUN rm -rf /tmp/cmake-3.17.2
 
@@ -57,16 +57,16 @@ RUN mkdir build
 WORKDIR build
 RUN cmake .. -GNinja -DCMAKE_INSTALL_PREFIX=$SPDLOG_INSTALL_DIR && cmake --build . --target install
 
-# Pybind11 2.5.0
+# Pybind11 2.6.2
 WORKDIR /workspace/libs/third-party/
-ENV PYBIND11_INSTALL_DIR /workspace/libs/third-party/pybind11-2.5.0/install_dir/
-RUN wget https://github.com/pybind/pybind11/archive/v2.5.0.tar.gz
-RUN tar xvfz v2.5.0.tar.gz
-RUN rm v2.5.0.tar.gz
-WORKDIR /workspace/libs/third-party/pybind11-2.5.0
+ENV PYBIND11_INSTALL_DIR /workspace/libs/third-party/pybind11-2.6.2/install_dir/
+RUN wget https://github.com/pybind/pybind11/archive/v2.6.2.tar.gz
+RUN tar xvfz v2.6.2.tar.gz
+RUN rm v2.6.2.tar.gz
+WORKDIR /workspace/libs/third-party/pybind11-2.6.2
 RUN mkdir build
 RUN mkdir install_dir
-WORKDIR /workspace/libs/third-party/pybind11-2.5.0/build
+WORKDIR /workspace/libs/third-party/pybind11-2.6.2/build
 RUN cmake .. -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_DIR -DCMAKE_GENERATOR="Ninja"
 RUN ninja
 RUN ninja install
@@ -80,7 +80,7 @@ RUN rm boost_1_70_0.tar.gz
 WORKDIR /workspace/libs/third-party/boost_1_70_0
 RUN mkdir install_dir
 RUN ./bootstrap.sh --prefix=$BOOST_INSTALL_DIR
-RUN ./b2 -j8 link=static runtime-link=static --abbreviate-paths variant=release toolset=gcc "cxxflags= -fno-semantic-interposition -fPIC" cxxstd=14 --with-test --with-system --with-filesystem --with-program_options --with-graph --with-random install
+RUN ./b2 -j`nproc` link=static runtime-link=static --abbreviate-paths variant=release toolset=gcc "cxxflags= -fno-semantic-interposition -fPIC" cxxstd=14 --with-test --with-system --with-filesystem --with-program_options --with-graph --with-random install
 
 # Protobuf 3.6.1
 WORKDIR /workspace/libs/third-party/
@@ -91,7 +91,7 @@ RUN rm protobuf-cpp-3.6.1.tar.gz
 WORKDIR /workspace/libs/third-party/protobuf-3.6.1
 RUN mkdir install_dir
 RUN CXXFLAGS=-fPIC CFLAGS=-fPIC ./configure --prefix=/workspace/libs/third-party/protobuf-3.6.1/install_dir/
-RUN make -j8
+RUN make -j`nproc`
 RUN make check
 RUN make install
 
@@ -117,7 +117,7 @@ RUN tar xvfz capnproto-c++-0.7.0.tar.gz
 RUN rm capnproto-c++-0.7.0.tar.gz
 WORKDIR /workspace/libs/third-party/capnproto-c++-0.7.0
 RUN ./configure --prefix=$CAPNPROTO_INSTALL_DIR
-RUN make -j6 check
+RUN make -j`nproc` check
 RUN make install
 
 # Tell pkg-config where to find CapnProto

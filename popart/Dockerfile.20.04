@@ -1,0 +1,79 @@
+# docker build -t popart-dev-test:20.04 -f Dockerfile.20.04 .
+
+FROM ubuntu:20.04
+
+# install basic tools
+RUN apt update && apt install vim wget -y
+
+RUN DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends tzdata
+
+# install Mambaforge
+ENV PATH="/opt/conda/bin:${PATH}"
+ARG PATH="/opt/conda/bin:${PATH}"
+RUN wget \
+    https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh \
+    && mkdir /root/.conda \
+    && bash /Mambaforge-Linux-x86_64.sh -b -p /opt/conda \
+    && rm -f /Mambaforge-Linux-x86_64.sh
+RUN conda init bash
+
+# use conda-forge
+RUN conda config --add channels conda-forge
+RUN conda config --set channel_priority strict
+
+# create new env
+RUN conda create -n py38 python=3.8 -y
+
+# make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "py38", "/bin/bash", "-c"]
+
+# install tools
+RUN mamba install cmake==3.22.3 ninja clang-tools clang-format -y
+
+# install build tools
+RUN mamba install gcc==9.5.0 gxx==9.5.0 -y
+RUN mamba install binutils -y
+
+# install libs
+RUN mamba install boost==1.70.0 spdlog==1.8.0 pybind11==2.6.2 -y
+# NOTE: need protobuf==3.6.1
+RUN mamba install protobuf==3.8.0 onnx==1.6.0 -y
+
+# install other tools
+RUN mamba install bash-completion openssh git make -y
+
+# CI
+RUN pip install pre-commit isort black cmake-format cmakelint cpplint
+
+# CapnProto 0.7.0
+WORKDIR /workspace/libs/third-party/
+ENV CAPNPROTO_INSTALL_DIR /workspace/libs/third-party/capnproto-c++-0.7.0/install_dir/
+RUN wget https://capnproto.org/capnproto-c++-0.7.0.tar.gz
+RUN tar xvfz capnproto-c++-0.7.0.tar.gz
+RUN rm capnproto-c++-0.7.0.tar.gz
+WORKDIR /workspace/libs/third-party/capnproto-c++-0.7.0
+RUN ./configure --prefix=$CAPNPROTO_INSTALL_DIR
+RUN make -j`nproc` check
+RUN make install
+# Tell pkg-config where to find CapnProto
+ENV PKG_CONFIG_PATH=$CAPNPROTO_INSTALL_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+
+# Trompeloeil v35
+WORKDIR /workspace/libs/third-party/
+ENV TROMPELOEIL_INSTALL_DIR /workspace/libs/third-party/trompeloeil-35/install_dir/
+RUN wget https://github.com/rollbear/trompeloeil/archive/refs/tags/v35.tar.gz
+RUN tar xvfz v35.tar.gz
+RUN rm v35.tar.gz
+WORKDIR /workspace/libs/third-party/trompeloeil-35
+RUN mkdir build
+WORKDIR /workspace/libs/third-party/trompeloeil-35/build
+RUN cmake .. -DCMAKE_INSTALL_PREFIX=$TROMPELOEIL_INSTALL_DIR
+RUN cmake --build . --target install
+
+# NOTE: manually install requirements
+
+# set env
+RUN echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/opt/conda/envs/py38/lib" >> ~/.bashrc
+RUN echo "export LIBRARY_PATH=\$LIBRARY_PATH:/opt/conda/envs/py38/lib" >> ~/.bashrc
+RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
+RUN echo "conda activate py38" >> ~/.bashrc

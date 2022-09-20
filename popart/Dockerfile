@@ -96,7 +96,7 @@ WORKDIR /workspace/libs/third-party/protobuf-3.6.1
 RUN mkdir install_dir
 RUN CXXFLAGS=-fPIC CFLAGS=-fPIC ./configure --prefix=/workspace/libs/third-party/protobuf-3.6.1/install_dir/
 RUN make -j`nproc`
-RUN make check
+# RUN make check
 RUN make install
 
 # ONNX 1.6.0
@@ -121,7 +121,7 @@ RUN tar xvfz capnproto-c++-0.7.0.tar.gz
 RUN rm capnproto-c++-0.7.0.tar.gz
 WORKDIR /workspace/libs/third-party/capnproto-c++-0.7.0
 RUN ./configure --prefix=$CAPNPROTO_INSTALL_DIR
-RUN make -j`nproc` check
+# RUN make -j`nproc` check
 RUN make install
 
 # Tell pkg-config where to find CapnProto

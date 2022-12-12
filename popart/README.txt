@@ -20,3 +20,16 @@ cmake config
 for
 pip install pybind11==2.6.0
 -Dpybind11_ROOT=/usr/local/lib/python3.6/dist-packages/pybind11
+
+before build
+```
+apt install rdma-core librdmacm1 ibverbs-utils -y
+pip install -r requirements/build.txt
+```
+
+append to `~/.bashrc`
+
+```
+unset POPLAR_SDK_ENABLED
+source /sdk/path/enable
+```

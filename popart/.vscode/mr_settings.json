@@ -1,0 +1,24 @@
+{
+    "cmake.configureSettings": {
+        "CMAKE_INSTALL_PREFIX": "install",
+        "BOOST_DIR": "/workspace/libs/third-party/boost_1_80_0/install_dir",
+        "Boost_INCLUDE_DIR": "/workspace/libs/third-party/boost_1_80_0/install_dir/include",
+        "pybind11_ROOT": "/workspace/libs/third-party/pybind11-2.6.2/install_dir",
+        "spdlog_ROOT": "/workspace/libs/third-party/spdlog-1.8.0/install_dir",
+    },
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/build/install/python",
+        // "./build/install/python"
+    ],
+    "terminal.integrated.env.linux": {
+        // "PYTHONPATH": "${workspaceFolder}/python",
+        "PYTHONPATH": "${workspaceFolder}/build/install/python",
+        // "LD_LIBRARY_PATH": "${workspaceFolder}/build/install/lib",
+        // "PYTHONPATH": "/opt/popart/python",
+        // "POPART_LOG_LEVEL": "INFO",
+        // "POPART_LOG_LEVEL": "DEBUG",
+        // "POPART_IR_DUMP": "${workspaceFolder}/ir_popart_dump.json",
+        // "IPUOF_CONFIG_PATH": "/alleng/paddle_ci/ipuof/ipu.conf",
+    },
+    // "python.defaultInterpreterPath": "/usr/bin/python",
+}

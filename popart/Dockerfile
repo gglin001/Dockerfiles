@@ -136,4 +136,6 @@ RUN cmake --build . --target install
 # install pip pkgs in the container
 # pip3 install -r requirements/build.txt
 
+# RUN apt install rdma-core librdmacm1 ibverbs-utils -y
+
 WORKDIR /workspace

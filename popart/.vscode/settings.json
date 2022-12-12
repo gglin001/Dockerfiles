@@ -1,0 +1,34 @@
+{
+    "cmake.configureSettings": {
+        "CMAKE_INSTALL_PREFIX": "install",
+        "BOOST_DIR": "/workspace/libs/third-party/boost_1_70_0/install_dir",
+        "Boost_INCLUDE_DIR": "/workspace/libs/third-party/boost_1_70_0/install_dir/include",
+        "CapnProto_ROOT": "/workspace/libs/third-party/capnproto-c++-0.7.0/install_dir",
+        "ONNX_DIR": "/workspace/libs/third-party/onnx-1.6.0/install_dir/share/cmake/ONNX",
+        // "POPLAR_INSTALL_DIR": "${workspaceFolder}/sdk/poplar_sdk/poplar-ubuntu_18_04-3.1.0+7267-4c0be86f86",
+        "Protobuf_ROOT": "/workspace/libs/third-party/protobuf-3.6.1/install_dir",
+        "Protobuf_INCLUDE_DIR": "/workspace/libs/third-party/protobuf-3.6.1/install_dir/include",
+        // pip install pybind11==2.6.0;
+        // "pybind11_ROOT": "/usr/local/lib/python3.6/dist-packages/pybind11",
+        "pybind11_ROOT": "/workspace/libs/third-party/pybind11-2.6.2/install_dir",
+        "spdlog_ROOT": "/workspace/libs/third-party/spdlog-1.8.0/install_dir",
+        "trompeloeil_ROOT": "/workspace/libs/third-party/trompeloeil-35/install_dir",
+        // "POPART_BUILD_TESTING": "OFF",
+        "POPART_BUILD_TESTING": "ON",
+    },
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/build/install/python",
+        // "./build/install/python"
+    ],
+    "terminal.integrated.env.linux": {
+        // "PYTHONPATH": "${workspaceFolder}/python",
+        "PYTHONPATH": "${workspaceFolder}/build/install/python",
+        // "LD_LIBRARY_PATH": "${workspaceFolder}/build/install/lib",
+        // "PYTHONPATH": "/opt/popart/python",
+        // "POPART_LOG_LEVEL": "INFO",
+        // "POPART_LOG_LEVEL": "DEBUG",
+        // "POPART_IR_DUMP": "${workspaceFolder}/ir_popart_dump.json",
+        // "IPUOF_CONFIG_PATH": "/alleng/paddle_ci/ipuof/ipu.conf",
+    },
+    // "python.defaultInterpreterPath": "/usr/bin/python",
+}

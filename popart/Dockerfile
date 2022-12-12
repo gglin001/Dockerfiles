@@ -14,6 +14,9 @@ RUN ln -sf /usr/bin/gcc-9 /usr/bin/gcc
 RUN ln -sf /usr/bin/g++-9 /usr/bin/g++
 RUN ln -sf /usr/bin/gcov-9 /usr/bin/gcov
 
+# rdma
+RUN apt install rdma-core librdmacm1 ibverbs-utils -y
+
 # install conda
 
 # install Mambaforge
@@ -79,6 +82,17 @@ RUN mkdir install_dir
 RUN ./bootstrap.sh --prefix=$BOOST_INSTALL_DIR
 RUN ./b2 -j`nproc` link=static runtime-link=static --abbreviate-paths variant=release toolset=gcc "cxxflags= -fno-semantic-interposition -fPIC" cxxstd=14 --with-test --with-system --with-filesystem --with-program_options --with-graph --with-random install
 
+# Boost 1.80.0
+WORKDIR /workspace/libs/third-party/
+ENV BOOST_INSTALL_DIR /workspace/libs/third-party/boost_1_80_0/install_dir/
+RUN wget https://sourceforge.net/projects/boost/files/boost/1.80.0/boost_1_80_0.tar.gz
+RUN tar xvfz boost_1_80_0.tar.gz
+RUN rm boost_1_80_0.tar.gz
+WORKDIR /workspace/libs/third-party/boost_1_80_0
+RUN mkdir install_dir
+RUN ./bootstrap.sh --prefix=$BOOST_INSTALL_DIR
+RUN ./b2 -j`nproc` link=static runtime-link=static --abbreviate-paths variant=release toolset=gcc "cxxflags= -fno-semantic-interposition -fPIC" cxxstd=14 --with-test --with-system --with-filesystem --with-program_options --with-graph --with-random install
+
 # Protobuf 3.6.1
 WORKDIR /workspace/libs/third-party/
 ENV PROTOBUF_INSTALL_DIR /workspace/libs/third-party/protobuf-3.6.1/install_dir/
@@ -135,7 +149,5 @@ RUN cmake --build . --target install
 # NOTE:
 # install pip pkgs in the container
 # pip3 install -r requirements/build.txt
-
-# RUN apt install rdma-core librdmacm1 ibverbs-utils -y
 
 WORKDIR /workspace

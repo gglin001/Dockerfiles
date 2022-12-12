@@ -1,41 +1,54 @@
-# docker build --no-cache -t clangdev:latest .
-# docker build -t clangdev:latest .
+# docker build -t clangdev:latest -f clangdev/Dockerfile --no-cache .
+# docker build -t clangdev:latest -f clangdev/Dockerfile .
 
 # FROM continuumio/miniconda3
-# prefer to use miniforge3
 # FROM condaforge/miniforge3
-FROM condaforge/mambaforge
+# FROM condaforge/mambaforge
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # install basic tools
-RUN apt update && apt install vim unzip -y
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
+RUN apt update
+RUN apt install wget -y
+RUN apt install sudo -y
+
+# install Mambaforge
+ENV PATH="/opt/conda/bin:${PATH}"
+RUN wget --progress=bar:force:noscroll \
+    https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh \
+    && bash Mambaforge-Linux-x86_64.sh -b -p /opt/conda \
+    && rm -f Mambaforge-Linux-x86_64.sh
+RUN conda init bash
 
 # use conda-forge
 RUN conda config --add channels conda-forge
 RUN conda config --set channel_priority strict
 
 # create new env
-RUN conda create -n py38 python=3.8 -y
+RUN conda create -n pyenv python=3.8 -y
+
+RUN sed -e '/[ -z "$PS1" ] && return/s/^/#/g' -i ~/.bashrc
+# set default conda env
+RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
+RUN echo "conda activate pyenv" >> ~/.bashrc
 
 # make RUN commands use the new environment:
-SHELL ["conda", "run", "-n", "py38", "/bin/bash", "-c"]
+SHELL ["bash", "-l", "-c"]
 
 # install tools
+RUN mamba install bash-completion openssh curl -y
+
+# install compiler
 # will install sysroot_linux-64
-# mamba install mlir libcxx
 RUN mamba install clang clang-tools gcc gxx cmake ninja -y
 
 # install libs
-RUN mamba install glog boost protobuf -y
-
-# install other tools
-RUN mamba install bash-completion openssh curl -y
-
-# install others
-RUN apt install -y sudo
+# mamba install mlir libcxx
+# RUN mamba install glog boost protobuf -y
 
 # set env
-RUN echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/opt/conda/envs/py38/lib" >> ~/.bashrc
-RUN echo "export LIBRARY_PATH=\$LIBRARY_PATH:/opt/conda/envs/py38/lib" >> ~/.bashrc
-RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
-RUN echo "conda activate py38" >> ~/.bashrc
+# LD_LIBRARY_PATH
+# RUN echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/opt/conda/envs/pyenv/lib" >> ~/.bashrc
+# RUN echo "export LIBRARY_PATH=\$LIBRARY_PATH:/opt/conda/envs/pyenv/lib" >> ~/.bashrc
+# ENV LD_LIBRARY_PATH="/opt/conda/lib:$LD_LIBRARY_PATH"

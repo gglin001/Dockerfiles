@@ -1,54 +1,47 @@
-# docker build -t popart_dev:latest .
+# docker build -t popart_dev:latest -f popart/Dockerfile .
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
-RUN apt-get update
+ENV DEBIAN_FRONTEND=noninteractive
 
-# -- BUILD TOOLS --
+# apt install basic tools
+RUN apt update
+RUN apt install wget -y
 
-# Install wget, git.
-RUN apt-get install wget git -y
-# Install python.
-RUN apt-get install python3 -y
-# Install pip3.
-RUN apt-get install python3-pip -y
-# Install ninja.
-RUN apt-get install ninja-build -y
-# Install pkg-config.
-RUN apt-get install pkg-config -y
+# gcc
+RUN apt install gcc-9 g++-9 -y
+RUN ln -sf /usr/bin/gcc-9 /usr/bin/gcc
+RUN ln -sf /usr/bin/g++-9 /usr/bin/g++
+RUN ln -sf /usr/bin/gcov-9 /usr/bin/gcov
 
-# Install cmake.
-WORKDIR /tmp/
-RUN wget https://cmake.org/files/v3.17/cmake-3.17.2.tar.gz
-RUN tar xzvf cmake-3.17.2.tar.gz
-RUN rm cmake-3.17.2.tar.gz
-WORKDIR /tmp/cmake-3.17.2
-RUN ./bootstrap --parallel=8 -- -DCMAKE_USE_OPENSSL=OFF
-RUN make -j`nproc`
-RUN make install
-RUN rm -rf /tmp/cmake-3.17.2
+# install conda
 
-# -- PIP PACKAGES --
+# install Mambaforge
+ENV PATH="/opt/conda/bin:${PATH}"
+RUN wget --progress=bar:force:noscroll \
+    https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh \
+    && bash Mambaforge-Linux-x86_64.sh -b -p /opt/conda \
+    && rm -f Mambaforge-Linux-x86_64.sh
+RUN conda init bash
 
-# # Protobuf
-# RUN pip3 install protobuf==3.19.0
-# # ONNX 1.7.0 or compatible.
-# RUN pip3 install onnx==1.6.0
-# # Pytest and Pytest-forked
-# RUN pip3 install pytest
-# RUN pip3 install pytest-forked
-# # Numpy
-# RUN pip3 install numpy
+# use conda-forge
+RUN conda config --add channels conda-forge
+RUN conda config --set channel_priority strict
 
-# NOTE: install torch manually
-# Torch 1.7.1
-# RUN pip3 install torch==1.7.1
-# Torch Vision 0.8.2
-# RUN pip3 install torchvision==0.8.2
+# create new env
+RUN conda create -n pyenv python=3.8 -y
 
-# NOTE:
-# install pip pkgs in the container
-# pip3 install -r requirements/build.txt
+RUN sed -e '/[ -z "$PS1" ] && return/s/^/#/g' -i ~/.bashrc
+# set default conda env
+RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
+RUN echo "conda activate pyenv" >> ~/.bashrc
+
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]
+
+RUN mamba install git -y
+RUN mamba install ninja make pkg-config -y
+RUN mamba install cmake==3.22.3 clang-tools clang-format -y
 
 # -- THIRD PARTY LIBRARIES --
 
@@ -139,7 +132,8 @@ WORKDIR /workspace/libs/third-party/trompeloeil-35/build
 RUN cmake .. -DCMAKE_INSTALL_PREFIX=$TROMPELOEIL_INSTALL_DIR
 RUN cmake --build . --target install
 
-# -- Set workdir.
+# NOTE:
+# install pip pkgs in the container
+# pip3 install -r requirements/build.txt
 
 WORKDIR /workspace
-

@@ -38,17 +38,16 @@ SHELL ["bash", "-l", "-c"]
 
 # install tools
 RUN mamba install bash-completion openssh curl -y
-
-# install compiler
 # will install sysroot_linux-64
 RUN mamba install clang clang-tools gcc gxx cmake ninja -y
-
-# install libs
+RUN mamba install git -y
 # mamba install mlir libcxx
 # RUN mamba install glog boost protobuf -y
 
-# set env
-# LD_LIBRARY_PATH
-# RUN echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/opt/conda/envs/pyenv/lib" >> ~/.bashrc
-# RUN echo "export LIBRARY_PATH=\$LIBRARY_PATH:/opt/conda/envs/pyenv/lib" >> ~/.bashrc
-# ENV LD_LIBRARY_PATH="/opt/conda/lib:$LD_LIBRARY_PATH"
+# install docker
+WORKDIR /opt
+RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz
+RUN tar xf docker-20.10.9.tgz && rm -f docker-20.10.9.tgz
+RUN echo "export PATH=\$PATH:/opt/docker" >>~/.bashrc
+ENV PATH="/opt/docker:${PATH}"
+WORKDIR /

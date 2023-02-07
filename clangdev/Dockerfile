@@ -37,16 +37,20 @@ RUN echo "conda activate pyenv" >> ~/.bashrc
 SHELL ["bash", "-l", "-c"]
 
 # install tools
+RUN mamba install clang==14 clang-tools==14 gcc gxx -y
+RUN mamba install sysroot_linux-64==2.17 -y
+RUN mamba install binutils -y
+
+RUN mamba install cmake ninja -y
 RUN mamba install bash-completion openssh curl -y
-# will install sysroot_linux-64
-RUN mamba install clang clang-tools gcc gxx cmake ninja -y
 RUN mamba install git -y
+
 # mamba install mlir libcxx
 # RUN mamba install glog boost protobuf -y
 
 # install docker
 WORKDIR /opt
-RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz
+RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz
 RUN tar xf docker-20.10.9.tgz && rm -f docker-20.10.9.tgz
 RUN echo "export PATH=\$PATH:/opt/docker" >>~/.bashrc
 ENV PATH="/opt/docker:${PATH}"

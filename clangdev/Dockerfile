@@ -15,6 +15,7 @@ RUN apt install sudo -y
 
 # clang-10
 RUN apt install -y --no-install-recommends clang
+RUN apt install -y --no-install-recommends gcc g++
 
 # install docker
 WORKDIR /opt

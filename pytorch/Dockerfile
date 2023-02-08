@@ -3,9 +3,10 @@
 
 FROM condaforge/mambaforge
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # install basic tools
 RUN apt update && apt install vim unzip -y
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 
 # use conda-forge
 RUN conda config --add channels conda-forge

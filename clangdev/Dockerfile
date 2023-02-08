@@ -13,6 +13,9 @@ RUN apt update
 RUN apt install wget -y
 RUN apt install sudo -y
 
+# clang-10
+RUN apt install -y --no-install-recommends clang
+
 # install docker
 WORKDIR /opt
 RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz
@@ -45,9 +48,9 @@ RUN echo "conda activate pyenv" >> ~/.bashrc
 SHELL ["bash", "-l", "-c"]
 
 # install tools
-RUN mamba install clang clang-tools gcc gxx -y
-RUN mamba install binutils -y
-RUN mamba install sysroot_linux-64==2.17 -y
+# RUN mamba install clang clang-tools gcc gxx -y
+# RUN mamba install binutils -y
+# RUN mamba install sysroot_linux-64==2.17 -y
 
 RUN mamba install cmake ninja -y
 RUN mamba install bash-completion openssh curl -y

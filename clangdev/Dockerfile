@@ -56,6 +56,7 @@ SHELL ["bash", "-l", "-c"]
 RUN mamba install cmake ninja -y
 RUN mamba install bash-completion openssh curl -y
 RUN mamba install git -y
+RUN mamba install lld -y
 
 # mamba install mlir libcxx
 # RUN mamba install glog boost protobuf -y

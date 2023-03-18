@@ -30,7 +30,7 @@ RUN conda init bash
 RUN conda config --add channels conda-forge
 RUN conda config --set channel_priority strict
 # change default conda cache-dir
-RUN conda config --remove-key pkgs_dirs
+# RUN conda config --remove-key pkgs_dirs
 RUN conda config --add pkgs_dirs /root/.cache/conda
 
 # create new env

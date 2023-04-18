@@ -1,0 +1,54 @@
+# docker build -t cpython:latest -f cpython/Dockerfile .
+
+FROM buildpack-deps:focal
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# install basic tools
+RUN apt update
+RUN apt install wget curl -y
+RUN apt install sudo -y
+RUN apt install make -y
+
+# clang-10
+RUN apt install -y --no-install-recommends clang
+RUN apt install -y --no-install-recommends gcc g++
+
+# install Mambaforge
+ENV PATH="/opt/conda/bin:${PATH}"
+RUN wget --progress=bar:force:noscroll \
+    https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh \
+    && bash Mambaforge-Linux-x86_64.sh -b -s -p /opt/conda \
+    && rm -f Mambaforge-Linux-x86_64.sh
+RUN conda init bash
+
+# use conda-forge
+RUN conda config --add channels conda-forge
+RUN conda config --set channel_priority strict
+# change default conda cache-dir
+# RUN conda config --remove-key pkgs_dirs
+RUN conda config --add pkgs_dirs /root/.cache/conda
+
+# create new env
+RUN conda create -n pyenv python=3.10 -y
+
+RUN sed -e '/[ -z "$PS1" ] && return/s/^/#/g' -i ~/.bashrc
+# set default conda env
+RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
+RUN echo "conda activate pyenv" >> ~/.bashrc
+
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]
+
+RUN mamba install cmake ninja -y
+RUN mamba install bash-completion openssh curl -y
+RUN mamba install git -y
+RUN mamba install lld -y
+
+# install docker
+WORKDIR /opt
+RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/static/stable/x86_64/docker-23.0.1.tgz -O docker.tgz
+RUN tar xf docker.tgz && rm -f docker.tgz
+RUN echo "export PATH=\$PATH:/opt/docker" >>~/.bashrc
+ENV PATH="/opt/docker:${PATH}"
+WORKDIR /

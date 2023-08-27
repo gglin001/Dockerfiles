@@ -12,7 +12,10 @@
         "esbenp.prettier-vscode",
         "llvm-vs-code-extensions.vscode-mlir",
         "jakob-erzar.llvm-tablegen",
-        "RReverser.llvm",
+        "rreverser.llvm",
         "akiramiyakoda.cppincludeguard",
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-docker",
+        "foxundermoon.shell-format"
     ]
 }

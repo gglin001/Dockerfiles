@@ -1,10 +1,12 @@
-# docker build -t clangdev:latest -f clangdev/Dockerfile --no-cache .
-# docker build -t clangdev:latest -f clangdev/Dockerfile .
+# docker build -t clangdev:20.04 -f clangdev/Dockerfile --no-cache .
+# docker build -t clangdev:20.04 -f clangdev/Dockerfile .
+# docker tag clangdev:20.04 clangdev:latest
 
 # FROM continuumio/miniconda3
 # FROM condaforge/miniforge3
 # FROM condaforge/mambaforge
-FROM ubuntu:20.04
+# FROM ubuntu:20.04
+FROM buildpack-deps:focal
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -44,13 +46,7 @@ RUN echo "conda activate pyenv" >> ~/.bashrc
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
 
-# install tools
-# RUN mamba install clang clang-tools gcc gxx -y
-# RUN mamba install binutils -y
-# RUN mamba install sysroot_linux-64==2.17 -y
-# RUN mamba install mlir libcxx
-# RUN mamba install glog boost protobuf -y
-
+# mamba
 RUN mamba install cmake ninja -y
 RUN mamba install bash-completion openssh curl -y
 RUN mamba install git -y

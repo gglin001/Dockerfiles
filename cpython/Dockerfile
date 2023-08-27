@@ -11,7 +11,7 @@ RUN apt install sudo -y
 RUN apt install make -y
 
 # clang-10
-RUN apt install -y --no-install-recommends clang
+RUN apt install -y --no-install-recommends clang lld
 RUN apt install -y --no-install-recommends gcc g++
 
 # install Mambaforge
@@ -40,10 +40,10 @@ RUN echo "conda activate pyenv" >> ~/.bashrc
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
 
+# mamba
 RUN mamba install cmake ninja -y
-RUN mamba install bash-completion openssh curl -y
+RUN mamba install bash-completion -y
 RUN mamba install git -y
-RUN mamba install lld -y
 
 # install docker
 WORKDIR /opt

@@ -47,7 +47,7 @@ RUN mamba install lld -y
 
 # install docker
 WORKDIR /opt
-RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/static/stable/x86_64/docker-23.0.1.tgz -O docker.tgz
+RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/static/stable/x86_64/docker-24.0.5.tgz -O docker.tgz
 RUN tar xf docker.tgz && rm -f docker.tgz
 RUN echo "export PATH=\$PATH:/opt/docker" >>~/.bashrc
 ENV PATH="/opt/docker:${PATH}"

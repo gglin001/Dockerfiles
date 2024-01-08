@@ -13,7 +13,7 @@ WORKDIR /home
 RUN git clone https://github.com/riscv-collab/riscv-gnu-toolchain
 # sometimes submodule sync will fail
 WORKDIR /home/riscv-gnu-toolchain
-RUN git submodule update --init --recursive
+RUN git submodule update --init --recursive --depth=1
 # from https://github.com/riscv-collab/riscv-gnu-toolchain
 RUN sudo apt-get -y install autoconf automake autotools-dev curl python3 python3-pip libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev
 # just newlib

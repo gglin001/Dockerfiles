@@ -17,8 +17,8 @@ RUN apt install ninja-build pkg-config libglib2.0-dev libpixman-1-dev -y
 WORKDIR /home/qemu
 RUN mkdir build
 WORKDIR /home/qemu/build
-RUN ../configure --target-list=riscv64-softmmu --prefix=$QEMU
-RUN ../configure --target-list="riscv64-linux-user" --prefix=$QEMU
+RUN ../configure --target-list="riscv64-softmmu riscv32-softmmu" --prefix=$QEMU
+RUN ../configure --target-list="riscv64-linux-user riscv32-linux-user" --prefix=$QEMU
 RUN make -j`nproc`
 RUN make install
 

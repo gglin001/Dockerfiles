@@ -1,0 +1,53 @@
+# docker build -t clangdev:22.04 -f clangdev/Dockerfile.aarch64.22.04 --no-cache .
+# docker build -t clangdev:22.04 -f clangdev/Dockerfile.aarch64.22.04 .
+
+# FROM continuumio/miniconda3
+# FROM condaforge/miniforge3
+# FROM condaforge/mambaforge
+# FROM ubuntu:22.04
+FROM buildpack-deps:jammy
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# install basic tools
+RUN apt update
+RUN apt install wget curl -y
+RUN apt install sudo -y
+RUN apt install make -y
+
+# clang-10
+RUN apt install -y --no-install-recommends clang lld
+RUN apt install -y --no-install-recommends gcc g++
+
+# install micromamba
+RUN curl -Ls https://micro.mamba.pm/api/micromamba/linux-aarch64/latest | tar -xvj bin/micromamba
+RUN mkdir -p $HOME/micromamba/bin
+RUN mv bin/micromamba $HOME/micromamba/bin/micromamba
+RUN $HOME/micromamba/bin/micromamba shell init --shell bash --root-prefix=$HOME/micromamba
+
+RUN sed -e '/[ -z "$PS1" ] && return/s/^/#/g' -i ~/.bashrc
+SHELL ["bash", "-l", "-c"]
+RUN micromamba config append channels conda-forge
+RUN micromamba create -n pyenv python=3.12 -y
+
+# set default conda env
+RUN echo "export PROMPT_DIRTRIM=1" >> ~/.bashrc
+RUN echo "alias conda=$HOME/micromamba/bin/micromamba" >> ~/.bashrc
+RUN echo "alias mamba=$HOME/micromamba/bin/micromamba" >> ~/.bashrc
+RUN echo "micromamba activate pyenv" >> ~/.bashrc
+
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]
+
+# micromamba
+RUN micromamba install cmake ninja -y
+RUN micromamba install bash-completion -y
+RUN micromamba install git -y
+
+# install docker
+WORKDIR /opt
+RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/static/stable/aarch64/docker-24.0.5.tgz -O docker.tgz
+RUN tar xf docker.tgz && rm -f docker.tgz
+RUN echo "export PATH=\$PATH:/opt/docker" >>~/.bashrc
+ENV PATH="/opt/docker:${PATH}"
+WORKDIR /

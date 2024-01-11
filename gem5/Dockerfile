@@ -1,6 +1,6 @@
 # docker build -t gem5:latest -f gem5/Dockerfile .
 
-FROM base_env:22.04
+FROM base:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 

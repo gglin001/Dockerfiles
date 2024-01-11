@@ -1,12 +1,11 @@
-# docker build -t base_env:22.04 -f base_env/Dockerfile.22.04 --no-cache .
-# docker build -t base_env:22.04 -f base_env/Dockerfile.22.04 .
-# docker tag base_env:22.04 base_env:latest
+# docker build -t base:20.04 -f base/Dockerfile --no-cache .
+# docker build -t base:20.04 -f base/Dockerfile .
 
 # FROM continuumio/miniconda3
 # FROM condaforge/miniforge3
 # FROM condaforge/mambaforge
-# FROM ubuntu:22.04
-FROM buildpack-deps:jammy
+# FROM ubuntu:20.04
+FROM buildpack-deps:focal
 
 ENV DEBIAN_FRONTEND=noninteractive
 

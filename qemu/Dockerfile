@@ -1,4 +1,4 @@
-# docker build -t qemu:latest .
+# docker build -t qemu:latest -f qemu/Dockerfile .
 
 FROM ubuntu:22.04
 

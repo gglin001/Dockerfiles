@@ -1,4 +1,4 @@
-# docker build -t riscv-gnu-toolchain:latest .
+# docker build -t riscv-gnu-toolchain:latest -f riscv/Dockerfile .
 
 FROM ubuntu:22.04
 

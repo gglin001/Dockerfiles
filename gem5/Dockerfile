@@ -18,3 +18,6 @@ RUN apt -y update && apt -y upgrade && \
     libpng-dev libelf-dev pkg-config pip python3-venv black python3-tk wget
 RUN pip install mypy pre-commit
 RUN pip install -U scons
+
+# extra
+RUN apt install -y libcapstone-dev

@@ -1,4 +1,4 @@
-# docker build -t cpython:latest -f cpython/Dockerfile .
+# docker build -t gem5:latest -f gem5/Dockerfile .
 
 FROM base_env:22.04
 

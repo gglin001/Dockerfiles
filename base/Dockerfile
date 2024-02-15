@@ -51,3 +51,17 @@ SHELL ["bash", "-l", "-c"]
 RUN micromamba install cmake ninja -y
 RUN micromamba install bash-completion -y
 RUN micromamba install git -y
+
+# clangd
+RUN micromamba install clang-tools -y
+# copy clang headers, ref:
+# https://github.com/clangd/clangd/releases/tag/17.0.3
+RUN CLANGD_VERSION=$(clangd --version | grep -Po '(?<=clangd version )[^.]+') && \
+  git clone -n --depth=1 --filter=tree:0 -b "release/${CLANGD_VERSION}.x"  https://github.com/llvm/llvm-project.git && \
+  pushd llvm-project && \
+  git sparse-checkout set --no-cone clang/lib/Headers && \
+  git checkout && \
+  DST_PATH="${CONDA_PREFIX}/lib/clang/${CLANGD_VERSION}/include/" && \
+  mkdir -p ${DST_PATH} && \
+  cp -r clang/lib/Headers/* ${DST_PATH}/ && \
+  popd

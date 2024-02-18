@@ -51,17 +51,10 @@ SHELL ["bash", "-l", "-c"]
 RUN micromamba install cmake ninja -y
 RUN micromamba install bash-completion -y
 RUN micromamba install git -y
-
-# clangd
 RUN micromamba install clang-tools -y
-# copy clang headers, ref:
-# https://github.com/clangd/clangd/releases/tag/17.0.3
+
+# get clang headers from `clang` from conda
+# TODO: if run `micromamba install clang`, does it need to clear the folder first?
 RUN CLANGD_VERSION=$(clangd --version | grep -Po '(?<=clangd version )[^.]+') && \
-  git clone -n --depth=1 --filter=tree:0 -b "release/${CLANGD_VERSION}.x"  https://github.com/llvm/llvm-project.git && \
-  pushd llvm-project && \
-  git sparse-checkout set --no-cone clang/lib/Headers && \
-  git checkout && \
-  DST_PATH="${CONDA_PREFIX}/lib/clang/${CLANGD_VERSION}/include/" && \
-  mkdir -p ${DST_PATH} && \
-  cp -r clang/lib/Headers/* ${DST_PATH}/ && \
-  popd
+  micromamba install --download-only --no-deps clang-$CLANGD_VERSION && \
+  cp -r $CONDA_PREFIX/../../pkgs/clang-$CLANGD_VERSION-*/lib/clang $CONDA_PREFIX/lib/

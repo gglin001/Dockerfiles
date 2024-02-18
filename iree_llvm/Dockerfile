@@ -32,6 +32,7 @@ RUN micromamba install numpy pybind11 -y
 # options come from
 # https://github.com/openxla/iree/tree/main/build_tools/cmake/iree_llvm.cmake
 # options needs update if iree update
+# TODO: set `LLVM_ENABLE_ASSERTIONS=OFF` ?
 RUN pushd iree-llvm-project && \
   cmake \
   -DCMAKE_BUILD_TYPE=Release \
@@ -39,6 +40,7 @@ RUN pushd iree-llvm-project && \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DCMAKE_C_COMPILER=/usr/bin/clang \
   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
   -DLLVM_ENABLE_WARNINGS=ON \
   -DLLVM_INCLUDE_EXAMPLES=OFF \
   -DLLVM_INCLUDE_TESTS=OFF \
@@ -51,7 +53,10 @@ RUN pushd iree-llvm-project && \
   -DLLVM_TARGETS_TO_BUILD="host;RISCV;AArch64" \
   -DLLVM_ENABLE_PROJECTS="mlir;clang;lld" \
   -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
-  -DMHLO_ENABLE_BINDINGS_PYTHON=ON \
   -S$PWD/llvm -B$PWD/build -GNinja && \
   cmake --build $PWD/build --target install && \
   popd
+
+# extra tools
+RUN micromamba install lit -y
+RUN micromamba install nanobind -y

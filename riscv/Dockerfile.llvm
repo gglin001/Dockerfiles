@@ -1,0 +1,15 @@
+# docker build -t riscv-gnu-toolchain:latest-llvm -f riscv/Dockerfile.llvm .
+
+FROM riscv-gnu-toolchain:latest-src
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV RISCV=/opt/riscv
+
+# llvm
+WORKDIR /home/riscv-gnu-toolchain
+RUN ./configure --prefix=$RISCV --with-arch=rv64gc --with-abi=lp64d --enable-linux --enable-llvm
+RUN make -j `nproc` linux
+RUN make install
+
+# update PATH
+ENV PATH="/opt/riscv/bin:${PATH}"

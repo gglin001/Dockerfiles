@@ -15,4 +15,6 @@ RUN sudo apt-get -y install autoconf automake autotools-dev curl python3 python3
 WORKDIR /home
 RUN git clone https://github.com/riscv-collab/riscv-gnu-toolchain
 WORKDIR /home/riscv-gnu-toolchain
-RUN git submodule update --init --recursive --depth=1
+RUN git submodule init
+RUN git submodule deinit -f dejagnu pk qemu spike musl
+RUN git submodule update --recursive --depth=1

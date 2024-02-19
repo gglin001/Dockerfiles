@@ -5,10 +5,10 @@ FROM riscv-gnu-toolchain:latest-src
 ENV DEBIAN_FRONTEND=noninteractive
 ENV RISCV=/opt/riscv
 
-# just newlib
+# newlib
 WORKDIR /home/riscv-gnu-toolchain
-RUN ./configure --prefix=$RISCV
-RUN make -j `nproc`
+RUN ./configure --prefix=$RISCV --with-arch=rv64gc --with-abi=lp64d
+RUN make -j `nproc` newlib
 RUN make install
 
 # update PATH

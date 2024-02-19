@@ -1,6 +1,7 @@
 # docker build -t qemu:latest -f qemu/Dockerfile .
 
-FROM ubuntu:22.04
+# FROM ubuntu:22.04
+FROM buildpack-deps:jammy
 
 ENV DEBIAN_FRONTEND=noninteractive
 

@@ -6,8 +6,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # swiftshader
 WORKDIR /home
+# https://swiftshader.googlesource.com/SwiftShader
 RUN git clone https://github.com/google/swiftshader.git --single-branch -b master --depth 1
-# RUN git clone https://swiftshader.googlesource.com/SwiftShader swiftshader --single-branch -b master --depth 1
 WORKDIR /home/swiftshader
 RUN curl -O https://gerrit-review.googlesource.com/tools/hooks/commit-msg && mv commit-msg .git/hooks/
 # RUN git submodule init
@@ -28,5 +28,5 @@ RUN cmake \
   -S$PWD -B$PWD/build -GNinja && \
   cmake --build $PWD/build --target install
 
-# update PATH
-ENV PATH="/opt/swiftshader/build/bin:${PATH}"
+# update VK_ICD_FILENAMES
+ENV VK_ICD_FILENAMES=/home/swiftshader/build/Linux/vk_swiftshader_icd.json

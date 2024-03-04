@@ -1,13 +1,13 @@
-# docker build -t riscv-gnu-toolchain:latest-newlib-im -f riscv/Dockerfile.newlib.im .
+# docker build -t riscv-gnu-toolchain:latest-llvm-newlib-im -f riscv/Dockerfile.llvm.newlib.im .
 
 FROM riscv-gnu-toolchain:latest-src
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV RISCV=/opt/riscv
 
-# newlib
+# riscv-gnu-toolchain
 WORKDIR /home/riscv-gnu-toolchain
-RUN ./configure --prefix=$RISCV --with-arch=rv64im --with-abi=lp64
+RUN ./configure --prefix=$RISCV --with-arch=rv64im --with-abi=lp64 --with-sim=spike --enable-llvm
 RUN make -j `nproc` newlib
 RUN make install
 

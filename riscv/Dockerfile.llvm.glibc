@@ -9,6 +9,8 @@ ENV RISCV=/opt/riscv
 WORKDIR /home/riscv-gnu-toolchain
 RUN ./configure --prefix=$RISCV --with-arch=rv64gc --with-abi=lp64d --with-sim=spike --enable-llvm --enable-linux
 RUN make -j `nproc` linux
+RUN sudo apt-get -y install device-tree-compiler
+RUN make -j `nproc` build-sim SIM=spike
 RUN make install
 
 # update PATH

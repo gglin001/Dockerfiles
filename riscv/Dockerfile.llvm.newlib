@@ -1,0 +1,17 @@
+# docker build -t riscv-gnu-toolchain:latest-llvm-newlib -f riscv/Dockerfile.llvm.newlib .
+
+FROM riscv-gnu-toolchain:latest-src
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV RISCV=/opt/riscv
+
+# riscv-gnu-toolchain
+WORKDIR /home/riscv-gnu-toolchain
+RUN ./configure --prefix=$RISCV --with-arch=rv64gc --with-abi=lp64d --with-sim=spike --enable-llvm
+RUN make -j `nproc` newlib
+RUN sudo apt-get -y install device-tree-compiler
+RUN make -j `nproc` build-sim SIM=spike
+RUN make install
+
+# update PATH
+ENV PATH="/opt/riscv/bin:${PATH}"

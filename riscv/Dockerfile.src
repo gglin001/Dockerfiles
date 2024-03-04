@@ -16,5 +16,5 @@ WORKDIR /home
 RUN git clone https://github.com/riscv-collab/riscv-gnu-toolchain
 WORKDIR /home/riscv-gnu-toolchain
 RUN git submodule init
-RUN git submodule deinit -f dejagnu pk qemu spike musl
+RUN git submodule deinit -f dejagnu qemu musl
 RUN git submodule update --recursive --depth=1

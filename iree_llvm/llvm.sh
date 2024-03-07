@@ -4,6 +4,8 @@
 git submodule status
 
 LLVM_SHA="c54064de80e93494d1d44550b56ce8f2f3cf9c4b"
+
+# `/iree-llvm-project` is where llvm mounted
 pushd /iree-llvm-project
 git fetch --depth 1 origin $LLVM_SHA
 git checkout $LLVM_SHA

@@ -23,4 +23,8 @@ SHELL ["bash", "-l", "-c"]
 RUN micromamba install cmake ninja -y
 RUN micromamba install bash-completion -y
 RUN micromamba install git -y
+
 RUN micromamba install clang-tools -y
+RUN micromamba install clang clangxx -y
+
+RUN micromamba install clangdev llvmdev -y

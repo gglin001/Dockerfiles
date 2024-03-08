@@ -26,5 +26,6 @@ RUN micromamba install git -y
 
 RUN micromamba install clang-tools -y
 RUN micromamba install clang clangxx -y
-
 RUN micromamba install clangdev llvmdev -y
+
+RUN micromamba install gcc gxx -y

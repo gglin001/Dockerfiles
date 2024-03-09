@@ -19,13 +19,15 @@ RUN echo "micromamba activate pyenv" >> ~/.bashrc
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
 
-# micromamba
+# compilers
+RUN micromamba install clang clangxx -y
+RUN micromamba install gcc gxx -y
+
+# tools
+RUN micromamba install clang-tools -y
 RUN micromamba install cmake ninja -y
 RUN micromamba install bash-completion -y
 RUN micromamba install git -y
 
-RUN micromamba install clang-tools -y
-RUN micromamba install clang clangxx -y
-RUN micromamba install clangdev llvmdev -y
-
-RUN micromamba install gcc gxx -y
+# optional libs
+# RUN micromamba install clangdev llvmdev -y

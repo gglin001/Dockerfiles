@@ -7,13 +7,12 @@ ENV RISCV=/opt/riscv
 
 # riscv-gnu-toolchain
 WORKDIR /home/riscv-gnu-toolchain
-RUN ./configure --prefix=$RISCV --with-arch=rv64gc --with-abi=lp64d --enable-llvm
-RUN make -j `nproc` musl
-RUN make install
+RUN ./configure --prefix=$RISCV --with-arch=rv64gc --with-abi=lp64d --enable-llvm && \
+  make -j `nproc` musl && \
+  make install && \
+  rm -rf /home/riscv-gnu-toolchain
 
-# clean src
 WORKDIR /opt/riscv
-RUN rm -rf /home/riscv-gnu-toolchain
 
 # update PATH
 ENV PATH="/opt/riscv/bin:${PATH}"

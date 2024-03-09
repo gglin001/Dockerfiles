@@ -1,4 +1,4 @@
-# docker build -t riscv-gnu-toolchain:latest-src -f riscv/Dockerfile.src .
+# docker build -t riscv-gnu-toolchain:latest-src -f riscv-gnu-toolchain/Dockerfile.src .
 
 # FROM ubuntu:22.04
 FROM buildpack-deps:jammy

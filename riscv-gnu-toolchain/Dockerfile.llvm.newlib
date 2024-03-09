@@ -1,4 +1,4 @@
-# docker build -t riscv-gnu-toolchain:latest-llvm-newlib -f riscv/Dockerfile.llvm.newlib .
+# docker build -t riscv-gnu-toolchain:latest-llvm-newlib -f riscv-gnu-toolchain/Dockerfile.llvm.newlib .
 
 FROM riscv-gnu-toolchain:latest-src
 
@@ -12,6 +12,10 @@ RUN make -j `nproc` newlib
 RUN sudo apt-get -y install device-tree-compiler
 RUN make -j `nproc` build-sim SIM=spike
 RUN make install
+
+# clean src
+WORKDIR /opt/riscv
+RUN rm -rf /home/riscv-gnu-toolchain
 
 # update PATH
 ENV PATH="/opt/riscv/bin:${PATH}"

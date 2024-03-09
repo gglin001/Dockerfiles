@@ -1,0 +1,6 @@
+# docker build --platform linux/amd64 -t centos7:latest-rv64gc -f centos7/Dockerfile.rv64gc .
+
+FROM centos7:latest
+
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]

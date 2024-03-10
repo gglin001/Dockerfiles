@@ -1,3 +1,4 @@
+# docker build -t centos7:latest -f centos7/Dockerfile .
 # docker build --platform linux/amd64 -t centos7:latest -f centos7/Dockerfile .
 
 FROM centos:centos7
@@ -31,19 +32,3 @@ RUN micromamba install git -y
 
 # optional libs
 # RUN micromamba install clangdev llvmdev -y
-
-WORKDIR /root
-
-RUN micromamba install unzip make -y
-RUN micromamba install autoconf automake flex bison help2man texinfo gawk libtool -y
-RUN micromamba install file which patch -y
-
-# build crosstool-ng
-RUN git clone https://github.com/crosstool-ng/crosstool-ng.git --single-branch -b crosstool-ng-1.26.0 --depth 1
-WORKDIR /root/crosstool-ng
-RUN ./bootstrap
-# RUN mkdir build
-# WORKDIR /root/crosstool-ng/build
-# RUN ../configure --prefix=/root/.local
-# RUN make -j`nproc`
-# RUN make install

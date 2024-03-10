@@ -1,0 +1,7 @@
+# docker build -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
+# docker build --platform linux/amd64 -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
+
+FROM centos7:latest-ctng
+
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]

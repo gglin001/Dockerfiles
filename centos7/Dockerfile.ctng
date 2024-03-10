@@ -1,0 +1,21 @@
+# docker build -t centos7:latest-ctng -f centos7/Dockerfile.ctng .
+# docker build --platform linux/amd64 -t centos7:latest -f centos7/Dockerfile .
+
+FROM centos:7
+
+RUN yum install -y epel-release
+RUN yum install -y autoconf gperf bison file flex texinfo help2man gcc-c++ libtool make patch \
+  ncurses-devel python36-devel perl-Thread-Queue bzip2 git wget which xz unzip rsync
+RUN ln -sf python36 /usr/bin/python3
+
+# build crosstool-ng
+ENV CTNG=/opt/ctng
+WORKDIR /home
+RUN git clone https://github.com/crosstool-ng/crosstool-ng.git --single-branch -b crosstool-ng-1.26.0 --depth 1
+WORKDIR /home/crosstool-ng
+RUN ./bootstrap
+WORKDIR /home/crosstool-ng/build
+RUN ../configure --prefix=$CTNG
+RUN make -j`nproc` && make install
+
+ENV PATH="$CTNG/bin:${PATH}"

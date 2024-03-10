@@ -1,0 +1,36 @@
+# docker build -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
+# docker build --platform linux/amd64 -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
+
+FROM centos7:latest-ctng
+
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]
+
+WORKDIR /home/ct-ng-rv64
+
+# gen `defconfig`
+COPY <<-EOT defconfig
+CT_CONFIG_VERSION="4"
+CT_EXPERIMENTAL=y
+CT_ALLOW_BUILD_AS_ROOT=y
+CT_ALLOW_BUILD_AS_ROOT_SURE=y
+CT_PREFIX_DIR="/opt/riscv"
+CT_ARCH_RISCV=y
+# CT_DEMULTILIB is not set
+CT_ARCH_64=y
+CT_ARCH_ARCH="rv64gc"
+CT_ARCH_ABI="lp64d"
+CT_DEBUG_GDB=y
+# CT_GDB_CROSS_PYTHON is not set
+EOT
+# gen `.config`
+RUN ct-ng defconfig
+RUN ct-ng show-config
+RUN ct-ng show-tuple
+# build
+RUN ct-ng build && rm -rf /home/ct-ng-rv64
+
+WORKDIR /opt/riscv
+
+# update PATH
+ENV PATH="/opt/riscv/bin:${PATH}"

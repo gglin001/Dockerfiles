@@ -14,8 +14,7 @@ CT_CONFIG_VERSION="4"
 CT_EXPERIMENTAL=y
 CT_ALLOW_BUILD_AS_ROOT=y
 CT_ALLOW_BUILD_AS_ROOT_SURE=y
-CT_PREFIX_DIR="/opt/riscv-rv64gc"
-CT_TARBALL_RESULT=y
+CT_PREFIX_DIR="/opt/riscv"
 CT_ARCH_RISCV=y
 # CT_DEMULTILIB is not set
 CT_ARCH_64=y
@@ -29,5 +28,9 @@ RUN ct-ng defconfig
 RUN ct-ng show-config
 RUN ct-ng show-tuple
 # build
-RUN ct-ng source
-RUN ct-ng build
+RUN ct-ng build && rm -rf /home/ct-ng-rv64
+
+WORKDIR /opt/riscv
+
+# update PATH
+ENV PATH="/opt/riscv/bin:${PATH}"

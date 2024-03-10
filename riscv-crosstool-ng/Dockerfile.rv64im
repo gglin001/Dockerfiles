@@ -1,7 +1,9 @@
-# docker build -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
-# docker build --platform linux/amd64 -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
+# docker build -t riscv-crosstool-ng:latest-rv64im -f riscv-crosstool-ng/Dockerfile.rv64im .
 
-FROM centos7:latest-ctng
+FROM crosstool-ng:latest
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV RISCV=/opt/riscv
 
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
@@ -17,8 +19,8 @@ CT_ALLOW_BUILD_AS_ROOT_SURE=y
 CT_ARCH_RISCV=y
 # CT_DEMULTILIB is not set
 CT_ARCH_64=y
-CT_ARCH_ARCH="rv64gc"
-CT_ARCH_ABI="lp64d"
+CT_ARCH_ARCH="rv64im"
+CT_ARCH_ABI="lp64"
 CT_DEBUG_GDB=y
 # CT_GDB_CROSS_PYTHON is not set
 EOT

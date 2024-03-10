@@ -1,5 +1,5 @@
-# docker build -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
-# docker build --platform linux/amd64 -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
+# docker build -t centos7:latest-ctng-rv64im -f centos7/Dockerfile.ctng.rv64im .
+# docker build --platform linux/amd64 -t centos7:latest-ctng-rv64im -f centos7/Dockerfile.ctng.rv64im .
 
 FROM centos7:latest-ctng
 

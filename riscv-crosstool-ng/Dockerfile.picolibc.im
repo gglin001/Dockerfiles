@@ -1,7 +1,9 @@
-# docker build -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
-# docker build --platform linux/amd64 -t centos7:latest-ctng-rv64gc -f centos7/Dockerfile.ctng.rv64gc .
+# docker build -t riscv-crosstool-ng:latest-picolibc-im -f riscv-crosstool-ng/Dockerfile.picolibc.im .
 
-FROM centos7:latest-ctng
+FROM crosstool-ng:latest
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV RISCV=/opt/riscv
 
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
@@ -18,17 +20,23 @@ CT_PREFIX_DIR="/opt/riscv"
 CT_ARCH_RISCV=y
 # CT_DEMULTILIB is not set
 CT_ARCH_64=y
-CT_ARCH_ARCH="rv64gc"
-CT_ARCH_ABI="lp64d"
+CT_ARCH_ARCH="rv64im_zicsr"
+CT_ARCH_ABI="lp64"
+CT_TARGET_CFLAGS="-mcmodel=medany"
 CT_DEBUG_GDB=y
-# CT_GDB_CROSS_PYTHON is not set
+CT_GDB_CROSS_PYTHON=no
+CT_LIBC_PICOLIBC=y
+CT_LIBC_PICOLIBC_TARGET_CFLAGS="-mcmodel=medany"
+CT_CC_LANG_CXX=y
 EOT
 # gen `.config`
 RUN ct-ng defconfig
 RUN ct-ng show-config
 RUN ct-ng show-tuple
 # build
-RUN ct-ng build && rm -rf /home/ct-ng-rv64
+RUN ct-ng source && ct-ng build && rm -rf /home/ct-ng-rv64
+# RUN ct-ng source
+# RUN ct-ng build
 
 WORKDIR /opt/riscv
 

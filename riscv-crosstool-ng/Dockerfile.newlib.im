@@ -1,4 +1,4 @@
-# docker build -t riscv-crosstool-ng:latest-rv64im -f riscv-crosstool-ng/Dockerfile.rv64im .
+# docker build -t riscv-crosstool-ng:latest-newlib-im -f riscv-crosstool-ng/Dockerfile.newlib.im .
 
 FROM crosstool-ng:latest
 
@@ -22,18 +22,23 @@ CT_ARCH_RISCV=y
 CT_ARCH_64=y
 CT_ARCH_ARCH="rv64im"
 CT_ARCH_ABI="lp64"
+CT_TARGET_CFLAGS="-mcmodel=medany"
 CT_DEBUG_GDB=y
-# CT_GDB_CROSS_PYTHON is not set
+CT_GDB_CROSS_PYTHON=no
+CT_LIBC_NEWLIB=y
+CT_LIBC_NEWLIB_TARGET_CFLAGS="-mcmodel=medany"
+CT_CC_LANG_CXX=y
 EOT
 # gen `.config`
 RUN ct-ng defconfig
 RUN ct-ng show-config
 RUN ct-ng show-tuple
 # build
-RUN ct-ng build && rm -rf /home/ct-ng-rv64
+RUN ct-ng source && ct-ng build && rm -rf /home/ct-ng-rv64
+# RUN ct-ng source
+# RUN ct-ng build
 
 WORKDIR /opt/riscv
 
 # update PATH
 ENV PATH="/opt/riscv/bin:${PATH}"
-

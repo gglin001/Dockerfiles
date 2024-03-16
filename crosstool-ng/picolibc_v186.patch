@@ -1,0 +1,49 @@
+diff --git a/config/libc/picolibc.in b/config/libc/picolibc.in
+index 6c4c6cac..813b251a 100644
+--- a/config/libc/picolibc.in
++++ b/config/libc/picolibc.in
+@@ -163,3 +163,8 @@ config LIBC_PICOLIBC_DEFAULT_RAM_SIZE
+       application when linked using the default picolibc link script.
+       Can be overridden on the linker command line using
+       -Wl,--defsym=__ram_size=<value>
++
++config LIBC_PICOLIBC_SEMIHOST
++    bool
++    prompt "Enable semihost"
++    default y
+diff --git a/packages/picolibc/1.8.3/chksum b/packages/picolibc/1.8.3/chksum
+deleted file mode 100644
+index ac9b8e9b..00000000
+--- a/packages/picolibc/1.8.3/chksum
++++ /dev/null
+@@ -1,4 +0,0 @@
+-md5 picolibc-1.8.3.tar.xz ea01ad58ed898560bc3576049a7b1ed6
+-sha1 picolibc-1.8.3.tar.xz 1c29c2963e9ebf0d6c98d22e65898057121a8b4f
+-sha256 picolibc-1.8.3.tar.xz dba349e1125395f566e0c0ddf621bda784687e269cf38f8ebc5527b964a7a16e
+-sha512 picolibc-1.8.3.tar.xz 21301b947cc2ec6fa5dd06646f3fdf899f070b5eb93a7fa9e81ff0de505536cb0d8f376b8f5335613f5a055be4db41f01ab752be66f857e786d268e64b9460d0
+diff --git a/packages/picolibc/1.8.6/chksum b/packages/picolibc/1.8.6/chksum
+new file mode 100644
+index 00000000..26095738
+--- /dev/null
++++ b/packages/picolibc/1.8.6/chksum
+@@ -0,0 +1,4 @@
++md5 picolibc-1.8.6.tar.xz c6972e4d6e6e7b1275ae8dc80eadb269
++sha1 picolibc-1.8.6.tar.xz a8b1148c782dc931e8c2e41bfe8062192df3f5e9
++sha256 picolibc-1.8.6.tar.xz 9549aac02bef6b2761af124392a7ffc6bbc8dfc8541b698ac032567b516c9b34
++sha512 picolibc-1.8.6.tar.xz f7e03aed7f24fb7a52f1e44bc244abccb72159b01c591aa68c43499f320765a559e4cdfd996bec855447781d8db311bc34f111a4d233cfdaa783f8347bf03f09
+diff --git a/packages/picolibc/1.8.3/version.desc b/packages/picolibc/1.8.6/version.desc
+similarity index 100%
+rename from packages/picolibc/1.8.3/version.desc
+rename to packages/picolibc/1.8.6/version.desc
+diff --git a/scripts/build/companion_libs/340-picolibc.sh b/scripts/build/companion_libs/340-picolibc.sh
+index 0b2038e6..6fc89c20 100644
+--- a/scripts/build/companion_libs/340-picolibc.sh
++++ b/scripts/build/companion_libs/340-picolibc.sh
+@@ -33,6 +33,7 @@ GLOBAL_ATEXIT:newlib-global-atexit
+ LITE_EXIT:lite-exit
+ MULTITHREAD:newlib-multithread
+ RETARGETABLE_LOCKING:newlib-retargetable-locking
++SEMIHOST:semihost
+     "
+
+     for ynarg in $yn_args; do

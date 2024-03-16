@@ -26,7 +26,7 @@ CT_DEBUG_GDB=y
 # CT_GDB_CROSS_PYTHON is not set
 CT_LIBC_PICOLIBC=y
 CT_PICOLIBC_V_1_8=y
-CT_PICOLIBC_VERSION="1.8.3"
+CT_PICOLIBC_VERSION="1.8.6"
 CT_LIBC_PICOLIBC_SEMIHOST=y
 CT_LIBC_PICOLIBC_TARGET_CFLAGS="-mcmodel=medany"
 CT_TARGET_CFLAGS="-mcmodel=medany"
@@ -36,7 +36,9 @@ RUN ct-ng defconfig
 RUN ct-ng show-config
 RUN ct-ng show-tuple
 # build
-RUN ct-ng build && rm -rf /home/ct-ng-rv64
+# RUN ct-ng source && ct-ng build && rm -rf /home/ct-ng-rv64
+RUN ct-ng source
+RUN ct-ng build
 
 WORKDIR /opt/riscv
 

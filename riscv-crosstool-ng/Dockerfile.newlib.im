@@ -22,8 +22,10 @@ CT_ARCH_RISCV=y
 CT_ARCH_64=y
 CT_ARCH_ARCH="rv64im"
 CT_ARCH_ABI="lp64"
+CT_TARGET_CFLAGS="-mcmodel=medany"
 CT_DEBUG_GDB=y
-# CT_GDB_CROSS_PYTHON is not set
+CT_GDB_CROSS_PYTHON=y
+CT_CC_LANG_CXX=y
 EOT
 # gen `.config`
 RUN ct-ng defconfig
@@ -36,4 +38,3 @@ WORKDIR /opt/riscv
 
 # update PATH
 ENV PATH="/opt/riscv/bin:${PATH}"
-

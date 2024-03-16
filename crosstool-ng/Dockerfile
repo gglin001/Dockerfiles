@@ -10,6 +10,7 @@ SHELL ["bash", "-l", "-c"]
 
 # deps
 RUN micromamba install libtool flex bison help2man texinfo gawk -y
+RUN micromamba install meson ninja -y
 
 WORKDIR /home
 # build crosstool-ng

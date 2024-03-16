@@ -1,3 +1,13 @@
+diff --git a/.gitignore b/.gitignore
+index 02711875..ca641f33 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -52,3 +52,5 @@ testing/docker/*/xtools
+ .build-all/
+ # .. and release creation
+ release/
++
++build/
 diff --git a/config/libc/picolibc.in b/config/libc/picolibc.in
 index 6c4c6cac..813b251a 100644
 --- a/config/libc/picolibc.in

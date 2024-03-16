@@ -42,4 +42,3 @@ WORKDIR /opt/riscv
 
 # update PATH
 ENV PATH="/opt/riscv/bin:${PATH}"
-

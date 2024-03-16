@@ -1,4 +1,4 @@
-# docker build -t riscv-crosstool-ng:latest-rv64im -f riscv-crosstool-ng/Dockerfile.rv64im .
+# docker build -t riscv-crosstool-ng:latest-picolibc-im -f riscv-crosstool-ng/Dockerfile.picolibc.im .
 
 FROM crosstool-ng:latest
 
@@ -16,14 +16,20 @@ CT_CONFIG_VERSION="4"
 CT_EXPERIMENTAL=y
 CT_ALLOW_BUILD_AS_ROOT=y
 CT_ALLOW_BUILD_AS_ROOT_SURE=y
-CT_PREFIX_DIR="/opt/riscv"
+CT_PREFIX_DIR="/opt/riscv_picolibc_im"
 CT_ARCH_RISCV=y
 # CT_DEMULTILIB is not set
 CT_ARCH_64=y
-CT_ARCH_ARCH="rv64im"
+CT_ARCH_ARCH="rv64im_zicsr"
 CT_ARCH_ABI="lp64"
 CT_DEBUG_GDB=y
 # CT_GDB_CROSS_PYTHON is not set
+CT_LIBC_PICOLIBC=y
+CT_PICOLIBC_V_1_8=y
+CT_PICOLIBC_VERSION="1.8.3"
+CT_LIBC_PICOLIBC_SEMIHOST=y
+CT_LIBC_PICOLIBC_TARGET_CFLAGS="-mcmodel=medany"
+CT_TARGET_CFLAGS="-mcmodel=medany"
 EOT
 # gen `.config`
 RUN ct-ng defconfig

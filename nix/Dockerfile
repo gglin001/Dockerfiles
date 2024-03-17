@@ -19,6 +19,3 @@ RUN sh <(curl -L https://nixos.org/nix/install) --daemon --yes
 
 # install git
 RUN nix-env -iA nixpkgs.git nixpkgs.openssh
-
-# update PATH
-ENV PATH="/root/.nix-profile/bin:${PATH}"

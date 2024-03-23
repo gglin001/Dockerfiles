@@ -14,10 +14,6 @@ WORKDIR /opt
 RUN wget --progress=bar:force:noscroll https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-aarch64_bin.tar.gz -O openjdk.tar.gz && \
   tar xf openjdk.tar.gz && rm -rf openjdk.tar.gz
 ENV PATH="/opt/jdk-17.0.2/bin:${PATH}"
-# set jabba, for vscode scala plugin
-# TODO: seems no need here?
-RUN mkdir -p /root/.jabba/jdk
-RUN ln -sf /opt/jdk-17.0.2 /root/.jabba/jdk/openjdk@1.17.0
 
 # sbt
 # https://github.com/sbt/sbt
@@ -27,17 +23,16 @@ ENV PATH="/opt/sbt/bin:${PATH}"
 
 # scala-cli
 # https://scala-cli.virtuslab.org/install/
-RUN curl -fL https://github.com/Virtuslab/scala-cli/releases/latest/download/scala-cli-aarch64-pc-linux.gz | gzip -d > scala-cli-bin && \
-  chmod +x scala-cli-bin && \
-  mkdir -p /opt/scala-cli && \
-  mv scala-cli-bin /opt/scala-cli/scala-cli
+RUN mkdir -p /opt/scala-cli
+RUN curl -fL https://github.com/Virtuslab/scala-cli/releases/latest/download/scala-cli-aarch64-pc-linux.gz | gzip -d > /opt/scala-cli/scala-cli && \
+  chmod +x /opt/scala-cli/scala-cli
 ENV PATH="/opt/scala-cli:${PATH}"
 
 # millw/mill
 # https://github.com/lefou/millw
-RUN curl -L https://raw.githubusercontent.com/lefou/millw/0.4.11/millw > mill && chmod +x mill
-RUN mkdir -p /opt/millw && mv mill /opt/millw/mill
-ENV PATH="/opt/millw:${PATH}"
+RUN mkdir -p /opt/mill
+RUN curl -L https://raw.githubusercontent.com/lefou/millw/0.4.11/millw > /opt/mill/mill && chmod +x /opt/mill/mill
+ENV PATH="/opt/mill:${PATH}"
 
 # coursier / cs
 # https://get-coursier.io/docs/cli-installation
@@ -50,10 +45,10 @@ ENV PATH="/opt/coursier:${PATH}"
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
 
-# install tools
-RUN echo "export PATH=/root/.local/share/coursier/bin:\$PATH" >> ~/.bashrc
-RUN cs install scalafmt
-RUN cs install metals
+# # install tools
+# RUN echo "export PATH=/root/.local/share/coursier/bin:\$PATH" >> ~/.bashrc
+# RUN cs install scalafmt
+# RUN cs install metals
 
 # TODO:
 # circt

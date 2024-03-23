@@ -19,3 +19,10 @@ RUN sh <(curl -L https://nixos.org/nix/install) --daemon --yes
 
 # install git
 RUN nix-env -iA nixpkgs.git nixpkgs.openssh
+
+COPY <<-EOT /root/.config/nix/nix.conf
+experimental-features = nix-command
+extra-experimental-features = flakes
+EOT
+
+RUN echo "export PATH=~/.nix-profile/bin:\${PATH}" >>~/.bashrc

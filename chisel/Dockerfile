@@ -45,6 +45,15 @@ ENV PATH="/opt/coursier:${PATH}"
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
 
+# nix
+# https://nixos.org/download
+RUN sh <(curl -L https://nixos.org/nix/install) --daemon --yes
+COPY <<-EOT /root/.config/nix/nix.conf
+experimental-features = nix-command
+extra-experimental-features = flakes
+EOT
+RUN echo "export PATH=~/.nix-profile/bin:\${PATH}" >>~/.bashrc
+
 # # install tools
 # RUN echo "export PATH=/root/.local/share/coursier/bin:\$PATH" >> ~/.bashrc
 # RUN cs install scalafmt

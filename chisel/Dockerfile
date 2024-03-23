@@ -26,10 +26,19 @@ ENV PATH="/opt/sbt/bin:${PATH}"
 
 # scala-cli
 # https://scala-cli.virtuslab.org/install/
-RUN curl -sSLf https://scala-cli.virtuslab.org/get | sh
+RUN curl -fL https://github.com/Virtuslab/scala-cli/releases/latest/download/scala-cli-aarch64-pc-linux.gz | gzip -d > scala-cli-bin && \
+  chmod +x scala-cli-bin && \
+  mkdir -p /opt/scala-cli && \
+  mv scala-cli-bin /opt/scala-cli/scala-cli
+ENV PATH="/opt/scala-cli:${PATH}"
 
 # millw/mill
 # https://github.com/lefou/millw
 RUN curl -L https://raw.githubusercontent.com/lefou/millw/0.4.11/millw > mill && chmod +x mill
 RUN mkdir -p /opt/millw && mv mill /opt/millw/mill
 ENV PATH="/opt/millw:${PATH}"
+
+# TODO:
+# circt
+# chisel
+# verilator

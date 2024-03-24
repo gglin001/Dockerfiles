@@ -1,0 +1,26 @@
+# docker buildx build --platform=linux/riscv64 --load -t pocl:latest-riscv -f pocl/Dockerfile.riscv .
+
+# NOTE: for riscv64, only pocl cpu runtime is built
+
+FROM riscv64/buildpack-deps:sid
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# install basic tools
+RUN apt update
+RUN apt install wget curl -y
+RUN apt install sudo -y
+RUN apt install make -y
+
+# compiler
+RUN apt install -y --no-install-recommends clang lld
+RUN apt install -y --no-install-recommends gcc g++
+
+WORKDIR /home
+# build pocl
+# NOTE: if need new version of pocl, update it in a container
+RUN git clone https://github.com/pocl/pocl.git --single-branch -b main --depth 1
+WORKDIR /home/pocl
+
+# update env
+# ENV PATH="/opt/riscv/bin:${PATH}"

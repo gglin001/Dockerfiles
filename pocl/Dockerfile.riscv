@@ -1,0 +1,42 @@
+# docker buildx build --platform=linux/riscv64 --load -t pocl:latest-riscv -f pocl/Dockerfile.riscv .
+
+# NOTE: for riscv64, only pocl cpu runtime is built
+
+FROM riscv64/buildpack-deps:sid
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# install basic tools
+RUN apt update
+RUN apt install wget curl -y
+RUN apt install sudo -y
+RUN apt install make -y
+
+# compiler
+RUN apt install -y --no-install-recommends clang lld
+RUN apt install -y --no-install-recommends gcc g++
+RUN apt install cmake ninja-build -y
+
+WORKDIR /home
+# build pocl
+# NOTE: if need new version / new config of pocl, update it in a container
+RUN git clone https://github.com/pocl/pocl.git --single-branch -b main --depth 1
+WORKDIR /home/pocl
+RUN \
+  cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DBUILD_SHARED_LIBS=ON \
+  -DENABLE_LLVM=OFF \
+  -DENABLE_POCLCC=OFF \
+  -DENABLE_TESTS=OFF \
+  -DENABLE_EXAMPLES=ON \
+  -DHOST_DEVICE_BUILD_HASH=00000000 \
+  -DENABLE_LOADABLE_DRIVERS=OFF \
+  -DENABLE_HOST_CPU_DEVICES=ON \
+  -S $PWD -B $PWD/build -GNinja
+RUN cmake --build $PWD/build --target install
+
+# RUN apt install clinfo -y
+# OCL_ICD_FILENAMES=/home/pocl/build/install/lib/libOpenCL.so clinfo

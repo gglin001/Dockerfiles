@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
 
-RUN micromamba install -y clangdev=18.1 llvmdev=18.1
+RUN micromamba install -y clangdev=18.1 llvmdev=18.1 clang-tools=18.1
 RUN micromamba install -y libhwloc pkg-config cmake ninja
 RUN micromamba install -y patchelf
 # RUN micromamba install -y clinfo

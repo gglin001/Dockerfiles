@@ -31,12 +31,15 @@ RUN \
   -S$PWD -B$PWD/build -GNinja && \
   cmake --build $PWD/build --target install
 
+ENV PATH="/opt/spirv-tools/bin:${PATH}"
+
 WORKDIR /home
 RUN git clone https://github.com/KhronosGroup/SPIRV-LLVM-Translator llvm-spirv --single-branch -b v18.1.0 --depth 1
 WORKDIR /home/llvm-spirv
 RUN \
   cmake \
   -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_PREFIX_PATH=/opt/spirv-tools \
   -DCMAKE_INSTALL_PREFIX=/opt/llvm-spirv \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DCMAKE_C_COMPILER=/usr/bin/clang \
@@ -46,16 +49,12 @@ RUN \
   -S$PWD -B$PWD/build -GNinja && \
   cmake --build $PWD/build --target install
 
+ENV PATH="/opt/llvm-spirv/bin:${PATH}"
+
 # WORKDIR /home
 # RUN git clone https://github.com/google/clspv clspv --single-branch -b main --depth 1
 # WORKDIR /home/clspv
 
 # build from src(conda pkgs are too old)
 # https://github.com/google/clspv
-# https://github.com/KhronosGroup/SPIRV-LLVM-Translator
 # https://github.com/pocl/pocl
-
-# maybe use conda spirv-tools
-# https://github.com/KhronosGroup/SPIRV-Tools
-# maybe use conda spirv-headers
-# https://github.com/KhronosGroup/SPIRV-Headers

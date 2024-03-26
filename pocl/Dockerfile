@@ -51,10 +51,32 @@ RUN \
 
 ENV PATH="/opt/llvm-spirv/bin:${PATH}"
 
+WORKDIR /home
+RUN git clone https://github.com/pocl/pocl pocl --single-branch -b main --depth 1
+WORKDIR /home/pocl
+RUN \
+  cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/opt/pocl \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DCMAKE_INSTALL_RPATH=ON \
+  -DENABLE_ICD=OFF \
+  -DKERNELLIB_HOST_CPU_VARIANTS="native" \
+  -DLLC_HOST_CPU="native" \
+  -DCLANG_MARCH_FLAG="-mcpu=" \
+  -S$PWD -B$PWD/build -GNinja && \
+  cmake --build $PWD/build --target install
+
+# do not set pocl env
+# ENV PATH="/opt/pocl/bin:${PATH}"
+# ENV LD_LIBRARY_PATH="$CONDA_PREFIX/lib:/opt/pocl/lib:${LD_LIBRARY_PATH}"
+
+# TODO: build clspv
 # WORKDIR /home
 # RUN git clone https://github.com/google/clspv clspv --single-branch -b main --depth 1
 # WORKDIR /home/clspv
 
-# build from src(conda pkgs are too old)
-# https://github.com/google/clspv
-# https://github.com/pocl/pocl
+# TODO: build clvk ?
+# https://github.com/kpet/clvk

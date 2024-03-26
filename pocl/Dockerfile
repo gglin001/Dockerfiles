@@ -63,8 +63,8 @@ RUN \
   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
   -DCMAKE_INSTALL_RPATH=ON \
   -DENABLE_ICD=OFF \
-  -DKERNELLIB_HOST_CPU_VARIANTS="native" \
-  -DLLC_HOST_CPU="native" \
+  -DKERNELLIB_HOST_CPU_VARIANTS="generic" \
+  -DLLC_HOST_CPU="generic" \
   -DCLANG_MARCH_FLAG="-mcpu=" \
   -S$PWD -B$PWD/build -GNinja && \
   cmake --build $PWD/build --target install

@@ -90,12 +90,16 @@ RUN \
   -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
   -DCMAKE_C_COMPILER=/usr/bin/clang \
   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DINSTALL_OPENCL_HEADERS=ON \
   -DENABLE_ICD=OFF \
+  -DENABLE_TESTS=OFF \
+  -DENABLE_EXAMPLES=ON \
   -DKERNELLIB_HOST_CPU_VARIANTS="generic" \
   -DLLC_HOST_CPU="generic" \
   -DCLANG_MARCH_FLAG="-mcpu=" \
   -S$PWD -B$PWD/build -GNinja && \
-  cmake --build $PWD/build --target install
+  cmake --build $PWD/build --target install && \
+  patchelf --add-rpath "\$ORIGIN/../lib:\$ORIGIN/../lib/CL" /opt/pocl/bin/poclcc
 
 # do not set pocl env
 # ENV PATH="/opt/pocl/bin:${PATH}"

@@ -97,4 +97,7 @@ RUN \
 
 ENV VK_ICD_FILENAMES=/home/swiftshader/build/Linux/vk_swiftshader_icd.json
 
+ENV PATH="/opt/vulkan-tools/bin:${PATH}"
+RUN patchelf --add-rpath "/opt/vulkan-loader/lib" /opt/vulkan-tools/bin/vulkaninfo
+
 WORKDIR /home

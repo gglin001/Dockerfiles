@@ -1,57 +1,11 @@
 # docker build -t pocl:latest -f pocl/Dockerfile .
 
-FROM base:latest
+FROM spirv:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
-
-RUN micromamba install -y clangdev=18.1 llvmdev=18.1 clang-tools=18.1
-RUN micromamba install -y libhwloc pkg-config cmake ninja
-RUN micromamba install -y patchelf
-# RUN micromamba install -y clinfo
-
-WORKDIR /home
-RUN git clone https://github.com/KhronosGroup/SPIRV-Headers spirv-headers --single-branch -b vulkan-sdk-1.3.280.0 --depth 1
-WORKDIR /home/spirv-headers
-
-WORKDIR /home
-RUN git clone https://github.com/KhronosGroup/SPIRV-Tools spirv-tools --single-branch -b vulkan-sdk-1.3.280.0 --depth 1
-WORKDIR /home/spirv-tools
-RUN \
-  cmake \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=/opt/spirv-tools \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
-  -DCMAKE_C_COMPILER=/usr/bin/clang \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-  -DSPIRV-Headers_SOURCE_DIR=/home/spirv-headers \
-  -DSPIRV_SKIP_TESTS=ON \
-  -S$PWD -B$PWD/build -GNinja && \
-  cmake --build $PWD/build --target install
-
-ENV PATH="/opt/spirv-tools/bin:${PATH}"
-
-WORKDIR /home
-RUN git clone https://github.com/KhronosGroup/SPIRV-LLVM-Translator llvm-spirv --single-branch -b v18.1.0 --depth 1
-WORKDIR /home/llvm-spirv
-RUN \
-  cmake \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_PREFIX_PATH=/opt/spirv-tools \
-  -DCMAKE_INSTALL_PREFIX=/opt/llvm-spirv \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
-  -DCMAKE_C_COMPILER=/usr/bin/clang \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-  -DLLVM_SPIRV_INCLUDE_TESTS=OFF \
-  -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=/home/spirv-headers \
-  -S$PWD -B$PWD/build -GNinja && \
-  cmake --build $PWD/build --target install
-
-ENV PATH="/opt/llvm-spirv/bin:${PATH}"
 
 WORKDIR /home
 RUN git clone https://github.com/gglin001/clspv.git clspv --single-branch -b allen/conda_build --depth 1
@@ -78,28 +32,6 @@ RUN \
 
 # `clspv-opt` is not a install target
 ENV PATH="/home/clspv/build/bin:${PATH}"
-
-WORKDIR /home
-RUN git clone https://github.com/google/swiftshader.git swiftshader --single-branch -b master --depth 1
-WORKDIR /home/swiftshader
-RUN curl -O https://gerrit-review.googlesource.com/tools/hooks/commit-msg && mv commit-msg .git/hooks/
-# no submodule download
-RUN \
-  cmake \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
-  -DCMAKE_C_COMPILER=/usr/bin/clang \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-  -DSWIFTSHADER_BUILD_BENCHMARKS=OFF \
-  -DSWIFTSHADER_BUILD_TESTS=OFF \
-  -DBUILD_VULKAN_WRAPPER=OFF \
-  -DSWIFTSHADER_LLVM_VERSION=16.0 \
-  -S$PWD -B$PWD/build -GNinja && \
-  cmake --build $PWD/build --target install
-
-ENV VK_ICD_FILENAMES=/home/swiftshader/build/Linux/vk_swiftshader_icd.json
 
 WORKDIR /home
 RUN git clone https://github.com/pocl/pocl pocl --single-branch -b main --depth 1

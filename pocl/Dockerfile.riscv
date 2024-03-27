@@ -13,7 +13,7 @@ RUN apt install sudo -y
 RUN apt install make -y
 
 # compiler
-RUN apt install -y --no-install-recommends clang lld
+RUN apt install -y --no-install-recommends clang-18 lld-18
 RUN apt install -y --no-install-recommends gcc g++
 RUN apt install cmake ninja-build -y
 

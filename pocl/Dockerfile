@@ -80,6 +80,28 @@ RUN \
 ENV PATH="/home/clspv/build/bin:${PATH}"
 
 WORKDIR /home
+RUN git clone https://github.com/google/swiftshader.git swiftshader --single-branch -b master --depth 1
+WORKDIR /home/swiftshader
+RUN curl -O https://gerrit-review.googlesource.com/tools/hooks/commit-msg && mv commit-msg .git/hooks/
+# no submodule download
+RUN \
+  cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DSWIFTSHADER_BUILD_BENCHMARKS=OFF \
+  -DSWIFTSHADER_BUILD_TESTS=OFF \
+  -DBUILD_VULKAN_WRAPPER=OFF \
+  -DSWIFTSHADER_LLVM_VERSION=16.0 \
+  -S$PWD -B$PWD/build -GNinja && \
+  cmake --build $PWD/build --target install
+
+ENV VK_ICD_FILENAMES=/home/swiftshader/build/Linux/vk_swiftshader_icd.json
+
+WORKDIR /home
 RUN git clone https://github.com/pocl/pocl pocl --single-branch -b main --depth 1
 WORKDIR /home/pocl
 RUN \
@@ -104,9 +126,7 @@ RUN \
 # do not set pocl env
 # ENV PATH="/opt/pocl/bin:${PATH}"
 
-# for some rpath issue:
-# LD_LIBRARY_PATH="$CONDA_PREFIX/lib:/opt/pocl/lib:${LD_LIBRARY_PATH}"
-# or use patchelf to solv it
+WORKDIR /home
 
 # TODO: build clvk(without llvm src) ?
 # https://github.com/kpet/clvk

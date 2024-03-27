@@ -50,7 +50,7 @@ SHELL ["bash", "-l", "-c"]
 # micromamba
 RUN micromamba install cmake ninja -y
 RUN micromamba install bash-completion -y
-RUN micromamba install git -y
+RUN micromamba install git openssh -y
 RUN micromamba install clang-tools -y
 
 # get clang headers from `clang` from conda

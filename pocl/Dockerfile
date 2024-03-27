@@ -24,6 +24,7 @@ RUN \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/opt/spirv-tools \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
   -DCMAKE_C_COMPILER=/usr/bin/clang \
   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
   -DSPIRV-Headers_SOURCE_DIR=/home/spirv-headers \
@@ -42,6 +43,7 @@ RUN \
   -DCMAKE_PREFIX_PATH=/opt/spirv-tools \
   -DCMAKE_INSTALL_PREFIX=/opt/llvm-spirv \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
   -DCMAKE_C_COMPILER=/usr/bin/clang \
   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
   -DLLVM_SPIRV_INCLUDE_TESTS=OFF \
@@ -50,28 +52,6 @@ RUN \
   cmake --build $PWD/build --target install
 
 ENV PATH="/opt/llvm-spirv/bin:${PATH}"
-
-WORKDIR /home
-RUN git clone https://github.com/pocl/pocl pocl --single-branch -b main --depth 1
-WORKDIR /home/pocl
-RUN \
-  cmake \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=/opt/pocl \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_C_COMPILER=/usr/bin/clang \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-  -DCMAKE_INSTALL_RPATH=ON \
-  -DENABLE_ICD=OFF \
-  -DKERNELLIB_HOST_CPU_VARIANTS="generic" \
-  -DLLC_HOST_CPU="generic" \
-  -DCLANG_MARCH_FLAG="-mcpu=" \
-  -S$PWD -B$PWD/build -GNinja && \
-  cmake --build $PWD/build --target install
-
-# do not set pocl env
-# ENV PATH="/opt/pocl/bin:${PATH}"
-# ENV LD_LIBRARY_PATH="$CONDA_PREFIX/lib:/opt/pocl/lib:${LD_LIBRARY_PATH}"
 
 WORKDIR /home
 RUN git clone https://github.com/gglin001/clspv.git clspv --single-branch -b allen/conda_build --depth 1
@@ -83,7 +63,9 @@ RUN \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_INSTALL_RPATH=ON \
+  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
   -DSPIRV_HEADERS_SOURCE_DIR=/home/spirv-headers \
   -DSPIRV_TOOLS_SOURCE_DIR=/home/spirv-tools \
   -DCLSPV_BUILD_TESTS=OFF \
@@ -97,5 +79,30 @@ RUN \
 # `clspv-opt` is not a install target
 ENV PATH="/home/clspv/build/bin:${PATH}"
 
-# TODO: build clvk ?
+WORKDIR /home
+RUN git clone https://github.com/pocl/pocl pocl --single-branch -b main --depth 1
+WORKDIR /home/pocl
+RUN \
+  cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/opt/pocl \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DENABLE_ICD=OFF \
+  -DKERNELLIB_HOST_CPU_VARIANTS="generic" \
+  -DLLC_HOST_CPU="generic" \
+  -DCLANG_MARCH_FLAG="-mcpu=" \
+  -S$PWD -B$PWD/build -GNinja && \
+  cmake --build $PWD/build --target install
+
+# do not set pocl env
+# ENV PATH="/opt/pocl/bin:${PATH}"
+
+# for some rpath issue:
+# LD_LIBRARY_PATH="$CONDA_PREFIX/lib:/opt/pocl/lib:${LD_LIBRARY_PATH}"
+# or use patchelf to solv it
+
+# TODO: build clvk(without llvm src) ?
 # https://github.com/kpet/clvk

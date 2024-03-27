@@ -15,6 +15,7 @@ RUN curl -O https://gerrit-review.googlesource.com/tools/hooks/commit-msg && mv 
 # RUN git submodule deinit third_party/benchmark third_party/googletest
 # RUN git submodule deinit third_party/glslang
 # RUN git submodule update --recursive --depth 1
+# TODO: use llvm 18
 RUN cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=$PWD/build/install \

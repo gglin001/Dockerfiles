@@ -23,17 +23,21 @@ RUN \
   --buildtype=release \
   -Dprefix=/opt/mesa \
   -Dplatforms=wayland \
-  -Dglx=disabled \
-  -Dgallium-drivers="swrast" \
-  -Ddraw-use-llvm=true \
-  -Dgallium-opencl=disabled \
-  -Dopencl-spirv=false \
-  -Dvulkan-drivers="swrast" \
+  -Dopengl=true \
   -Dgles1=disabled \
   -Dgles2=disabled \
-  -Dopengl=true \
+  -Dglx=disabled \
+  -Degl=disabled \
   -Dllvm=enabled \
-  -Dbuild-tests=false && \
+  -Ddraw-use-llvm=true \
+  -Dgallium-drivers="swrast" \
+  -Dgallium-opencl=disabled \
+  -Dgallium-rusticl=false \
+  -Dopencl-spirv=false \
+  -Dvulkan-drivers="swrast" \
+  -Dperfetto=false \
+  -Dbuild-tests=false \
+  -Denable-glcpp-tests=false && \
   meson compile -C build && \
   meson install -C build
 

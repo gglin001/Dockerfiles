@@ -41,4 +41,6 @@ RUN \
   meson compile -C build && \
   meson install -C build
 
+RUN echo "export VK_ICD_FILENAMES=$(ls -q /opt/mesa/share/vulkan/icd.d/*.json)" >> /root/.bashrc
+
 WORKDIR /home

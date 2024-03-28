@@ -1,4 +1,4 @@
-# docker build -t spirv:latest -f spirv/Dockerfile .
+# docker build -t spirv:latest -f spirv/Dockerfile.spirv .
 
 FROM base:latest
 

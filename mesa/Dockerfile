@@ -1,6 +1,6 @@
 # docker build -t mesa:latest -f mesa/Dockerfile .
 
-FROM spirv:latest
+FROM vulkan:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 

@@ -52,4 +52,7 @@ RUN \
 
 ENV PATH="/opt/llvm-spirv/bin:${PATH}"
 
+# TODO: add SPIRV-Cross
+# https://github.com/KhronosGroup/SPIRV-Cross
+
 WORKDIR /home

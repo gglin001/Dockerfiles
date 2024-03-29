@@ -39,12 +39,12 @@ WORKDIR /home/llvm-spirv
 RUN \
   cmake \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_PREFIX_PATH=/opt/spirv-tools \
   -DCMAKE_INSTALL_PREFIX=/opt/llvm-spirv \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
   -DCMAKE_C_COMPILER=/usr/bin/clang \
   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DCMAKE_PREFIX_PATH=/opt/spirv-tools \
   -DLLVM_SPIRV_INCLUDE_TESTS=OFF \
   -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=/home/spirv-headers \
   -S$PWD -B$PWD/build -GNinja && \
@@ -52,7 +52,21 @@ RUN \
 
 ENV PATH="/opt/llvm-spirv/bin:${PATH}"
 
-# TODO: add SPIRV-Cross
-# https://github.com/KhronosGroup/SPIRV-Cross
+WORKDIR /home
+RUN git clone https://github.com/KhronosGroup/SPIRV-Cross spirv-cross --single-branch -b main --depth 1
+WORKDIR /home/spirv-cross
+RUN \
+  cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/opt/spirv-cross \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DSPIRV_CROSS_ENABLE_TESTS=OFF \
+  -S$PWD -B$PWD/build -GNinja && \
+  cmake --build $PWD/build --target install
+
+ENV PATH="/opt/spirv-cross/bin:${PATH}"
 
 WORKDIR /home

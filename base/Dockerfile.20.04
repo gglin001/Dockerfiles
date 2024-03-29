@@ -54,7 +54,6 @@ RUN micromamba install git openssh -y
 RUN micromamba install clang-tools -y
 
 # get clang headers from `clang` from conda
-# TODO: if run `micromamba install clang`, does it need to clear the folder first?
 RUN CLANGD_VERSION=$(clangd --version | grep -Po '(?<=clangd version )[^.]+') && \
   micromamba install --download-only --no-deps clang-$CLANGD_VERSION && \
   cp -r $CONDA_PREFIX/../../pkgs/clang-$CLANGD_VERSION-*/lib/clang $CONDA_PREFIX/lib/

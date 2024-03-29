@@ -1,4 +1,4 @@
-# docker build -t spirv:latest -f spirv/Dockerfile .
+# docker build -t spirv:latest -f spirv/Dockerfile.spirv .
 
 FROM base:latest
 
@@ -51,5 +51,8 @@ RUN \
   cmake --build $PWD/build --target install
 
 ENV PATH="/opt/llvm-spirv/bin:${PATH}"
+
+# TODO: add SPIRV-Cross
+# https://github.com/KhronosGroup/SPIRV-Cross
 
 WORKDIR /home

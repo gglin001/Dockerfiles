@@ -55,8 +55,7 @@ RUN \
   cmake --build $PWD/build --target install && \
   patchelf --add-rpath "\$ORIGIN/../lib:\$ORIGIN/../lib/CL" /opt/pocl/bin/poclcc
 
-# do not set pocl env
-# ENV PATH="/opt/pocl/bin:${PATH}"
+RUN echo "export PATH=/opt/pocl/bin:\${PATH}" >> /root/.bashrc
 
 WORKDIR /home
 

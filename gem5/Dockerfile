@@ -24,4 +24,6 @@ RUN CLANGD_VERSION=$(clangd --version | grep -Po '(?<=clangd version )[^.]+') &&
 
 # for gem5
 RUN micromamba install scons -y
-RUN micromamba install pybind11 -y
+RUN micromamba install pybind11 gperftools protobuf hdf5 -y
+# libcapstone from conda has no aarch64 version
+RUN apt install -y libcapstone-dev

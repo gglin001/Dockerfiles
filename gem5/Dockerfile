@@ -7,14 +7,21 @@ ENV DEBIAN_FRONTEND=noninteractive
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]
 
-# sync with gem5 `util/dockerfiles/ubuntu-22.04_all-dependencies/Dockerfile`
-RUN apt -y update && apt -y upgrade && \
-    apt -y install build-essential git m4 scons zlib1g zlib1g-dev \
-    libprotobuf-dev protobuf-compiler libprotoc-dev libgoogle-perftools-dev \
-    python3-dev doxygen libboost-all-dev libhdf5-serial-dev python3-pydot \
-    libpng-dev libelf-dev pkg-config pip python3-venv black python3-tk wget
-RUN pip install mypy pre-commit
-RUN pip install -U scons
+RUN micromamba create -n gem5 python=3.10 -y
+RUN sed -i -e 's/micromamba activate pyenv/# micromamba activate pyenv/g' ~/.bashrc
+RUN echo "micromamba activate gem5" >> ~/.bashrc
 
-# extra
-RUN apt install -y libcapstone-dev
+# micromamba
+RUN micromamba install cmake ninja -y
+RUN micromamba install bash-completion -y
+RUN micromamba install git openssh -y
+RUN micromamba install clang-tools -y
+
+# get clang headers from `clang` from conda
+RUN CLANGD_VERSION=$(clangd --version | grep -Po '(?<=clangd version )[^.]+') && \
+  micromamba install --download-only --no-deps clang-$CLANGD_VERSION && \
+  cp -r $CONDA_PREFIX/../../pkgs/clang-$CLANGD_VERSION-*/lib/clang $CONDA_PREFIX/lib/
+
+# for gem5
+RUN micromamba install scons -y
+RUN micromamba install pybind11 -y

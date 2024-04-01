@@ -23,7 +23,9 @@ RUN CLANGD_VERSION=$(clangd --version | grep -Po '(?<=clangd version )[^.]+') &&
   cp -r $CONDA_PREFIX/../../pkgs/clang-$CLANGD_VERSION-*/lib/clang $CONDA_PREFIX/lib/
 
 # for gem5
-RUN micromamba install scons -y
-RUN micromamba install pybind11 gperftools protobuf hdf5 -y
 # libcapstone from conda has no aarch64 version
 RUN apt install -y libcapstone-dev
+RUN micromamba install scons -y
+RUN micromamba install pybind11 gperftools protobuf hdf5 -y
+RUN micromamba install mypy pre-commit -y
+RUN micromamba install pydot -y

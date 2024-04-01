@@ -27,6 +27,6 @@ RUN \
   -S$PWD -B$PWD/build -GNinja && \
   cmake --build $PWD/build --target install
 
-ENV VK_ICD_FILENAMES=/home/swiftshader/build/Linux/vk_swiftshader_icd.json
+RUN echo "export VK_ICD_FILENAMES=/home/swiftshader/build/Linux/vk_swiftshader_icd.json" >> /root/.bashrc
 
 WORKDIR /home

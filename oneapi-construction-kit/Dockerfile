@@ -8,5 +8,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 SHELL ["bash", "-l", "-c"]
 
 RUN micromamba install lit -y
+RUN micromamba install lld -y
 
 WORKDIR /home

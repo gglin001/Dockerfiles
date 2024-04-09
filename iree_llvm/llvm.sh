@@ -4,7 +4,8 @@
 git submodule status
 
 # LLVM_SHA="c54064de80e93494d1d44550b56ce8f2f3cf9c4b"
-LLVM_SHA="a36e85f10497924ed996c1a9b82f26d004713d54"
+# LLVM_SHA="a36e85f10497924ed996c1a9b82f26d004713d54"
+LLVM_SHA="9708d0900311503aa4685d6810d8caf0412e15d7"
 
 # `/iree-llvm-project` is where llvm mounted
 pushd /iree-llvm-project

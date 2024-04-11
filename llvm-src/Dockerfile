@@ -15,7 +15,9 @@ RUN git clone -n --depth=1 --filter=tree:0 https://github.com/llvm/llvm-project.
   pushd llvm-project && \
   git sparse-checkout set --no-cone \
   /clang /cmake /libunwind /lld /llvm /mlir \
-  '!/clang/test' '!/clang/unittests' '!/llvm/test' '!/llvm/unittests' '!/mlir/test' !'/lld/test' && \
+  '!/clang/test' '!/clang/unittests' '!/clang/docs' '!/clang/www' \
+  '!/llvm/test' '!/llvm/unittests' '!/llvm/docs' \
+  '!/mlir/test' '!/mlir/docs' !'/lld/test' && \
   git fetch --depth 1 origin $SHA && \
   git checkout -b nb $SHA && \
   popd

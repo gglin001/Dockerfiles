@@ -1,5 +1,7 @@
 # docker build -t llvm-src:latest -f llvm-src/Dockerfile .
 
+# for llvm building with sparse-checkout src
+
 FROM base:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -13,7 +15,9 @@ RUN git clone -n --depth=1 --filter=tree:0 https://github.com/llvm/llvm-project.
   pushd llvm-project && \
   git sparse-checkout set --no-cone \
   /clang /cmake /libunwind /lld /llvm /mlir \
-  '!/clang/test' '!/llvm/test' '!/mlir/test' && \
+  '!/clang/test' '!/clang/unittests' '!/llvm/test' '!/llvm/unittests' '!/mlir/test' !'/lld/test' && \
   git fetch --depth 1 origin $SHA && \
   git checkout -b nb $SHA && \
   popd
+
+# TODO: add ref building commands for test

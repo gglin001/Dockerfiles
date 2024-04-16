@@ -1,6 +1,6 @@
 # docker build -t llvm-src:latest -f llvm-src/Dockerfile \
 # --build-arg LLVM_SHA="c13b7485b87909fcf739f62cfa382b55407433c0" \
-# --build-arg LLVM_REPO="https://github.com/shark-infra/llvm-project.git" \
+# --build-arg LLVM_REPO="https://github.com/llvm/llvm-project.git" \
 # .
 
 # for llvm building with sparse-checkout src

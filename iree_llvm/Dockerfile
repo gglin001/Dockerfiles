@@ -1,19 +1,21 @@
 # docker build -t iree_llvm:latest -f iree_llvm/Dockerfile \
-# --build-arg SHA="f01ed3bc8884223bf3edbaad8d3685622444cbf5" .
+# --build-arg LLVM_SHA="f01ed3bc8884223bf3edbaad8d3685622444cbf5" \
+# --build-arg LLVM_REPO="https://github.com/shark-infra/llvm-project.git" \
+# .
 
 FROM base:latest
 
-ARG SHA="f01ed3bc8884223bf3edbaad8d3685622444cbf5"
+ARG LLVM_SHA="f01ed3bc8884223bf3edbaad8d3685622444cbf5"
+ARG LLVM_REPO="https://github.com/shark-infra/llvm-project.git"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /
 
-# https://github.com/shark-infra/llvm-project
-RUN git clone -n --depth=1 --filter=tree:0 https://github.com/shark-infra/llvm-project.git iree-llvm-project && \
+RUN git clone -n --depth=1 --filter=tree:0 $LLVM_REPO iree-llvm-project && \
   pushd iree-llvm-project && \
-  git fetch --depth 1 origin $SHA && \
-  git checkout $SHA && \
+  git fetch --depth 1 origin $LLVM_SHA && \
+  git checkout $LLVM_SHA && \
   popd
 
 # TODO: better to use `build_tools/llvm` ?

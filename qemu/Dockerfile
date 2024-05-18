@@ -9,7 +9,8 @@ ENV QEMU=/opt/qemu
 
 # qemu
 WORKDIR /home
-RUN git clone https://github.com/qemu/qemu --single-branch -b v8.2.2 --depth 1
+# RUN git clone https://github.com/qemu/qemu --single-branch -b v8.2.2 --depth 1
+RUN git clone https://github.com/qemu/qemu --single-branch -b v9.0.0 --depth 1
 WORKDIR /home/qemu
 RUN mkdir build
 WORKDIR /home/qemu/build

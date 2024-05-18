@@ -11,6 +11,7 @@ ENV QEMU=/opt/qemu
 RUN micromamba install meson
 
 # mesonlsp
+# https://github.com/JCWasmx86/mesonlsp/releases
 WORKDIR /home/mesonlsp
 # TODO: check if arch works
 RUN wget https://github.com/JCWasmx86/mesonlsp/releases/latest/download/mesonlsp-$(uname -m)-unknown-linux-musl.zip -O mesonlsp.zip

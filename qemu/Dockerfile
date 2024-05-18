@@ -7,6 +7,24 @@ FROM base:latest
 ENV DEBIAN_FRONTEND=noninteractive
 ENV QEMU=/opt/qemu
 
+# meson
+RUN micromamba install meson
+
+# mesonlsp
+WORKDIR /home/mesonlsp
+# TODO: check if arch works
+RUN wget https://github.com/JCWasmx86/mesonlsp/releases/latest/download/mesonlsp-$(uname -m)-unknown-linux-musl.zip -O mesonlsp.zip
+RUN unzip mesonlsp.zip
+RUN cp mesonlsp /usr/local/bin/mesonlsp
+
+# muon
+WORKDIR /home
+RUN git clone https://github.com/annacrombie/muon.git --depth 1
+WORKDIR /home/muon
+RUN meson setup --reconfigure build --prefix /usr/local
+RUN meson compile -C build
+RUN meson install -C build
+
 # qemu
 WORKDIR /home
 # RUN git clone https://github.com/qemu/qemu --single-branch -b v8.2.2 --depth 1

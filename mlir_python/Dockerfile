@@ -27,26 +27,31 @@ RUN git clone -n --depth=1 --filter=tree:0 $LLVM_REPO llvm-project && \
 
 RUN micromamba install numpy pybind11 -y
 
-# RUN pushd llvm-project && \
-#   cmake \
-#   -DCMAKE_BUILD_TYPE=Release \
-#   -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
-#   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-#   -DCMAKE_C_COMPILER=/usr/bin/clang \
-#   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-#   -DLLVM_ENABLE_ASSERTIONS=ON \
-#   -DLLVM_ENABLE_WARNINGS=ON \
-#   -DLLVM_INCLUDE_EXAMPLES=OFF \
-#   -DLLVM_INCLUDE_TESTS=OFF \
-#   -DLLVM_INCLUDE_UTILS=ON \
-#   -DLLVM_INSTALL_UTILS=ON \
-#   -DLLVM_INCLUDE_BENCHMARKS=OFF \
-#   -DLLVM_APPEND_VC_REV=OFF \
-#   -DLLVM_ENABLE_IDE=ON \
-#   -DLLVM_ENABLE_BINDINGS=OFF \
-#   -DLLVM_TARGETS_TO_BUILD="host;RISCV;AArch64" \
-#   -DLLVM_ENABLE_PROJECTS="mlir;clang;lld" \
-#   -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
-#   -S$PWD/llvm -B$PWD/build -GNinja && \
-#   cmake --build $PWD/build --target install && \
-#   popd
+WORKDIR /llvm-project
+
+# reduce tools targets
+# RUN sed -i -e 's/create_llvm_tool_options/# create_llvm_tool_options/g' llvm/tools/CMakeLists.txt
+
+RUN \
+  cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DLLVM_INCLUDE_TOOLS=ON \
+  -DLLVM_INCLUDE_UTILS=OFF \
+  -DLLVM_INCLUDE_RUNTIMES=OFF \
+  -DLLVM_INCLUDE_EXAMPLES=OFF \
+  -DLLVM_INCLUDE_TESTS=OFF \
+  -DLLVM_INCLUDE_BENCHMARKS=OFF \
+  -DLLVM_INCLUDE_DOCS=OFF \
+  -DLLVM_ENABLE_BINDINGS=OFF \
+  -DLLVM_TARGETS_TO_BUILD="host" \
+  -DLLVM_ENABLE_PROJECTS="mlir" \
+  -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
+  -S$PWD/llvm -B$PWD/build -GNinja && \
+  cmake --build $PWD/build --target install-MLIRPythonModules
+
+RUN echo "export PYTHONPATH=/llvm-project/build/install/python_packages/mlir_core" >> ~/.bashrc

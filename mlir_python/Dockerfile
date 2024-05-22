@@ -30,7 +30,7 @@ RUN micromamba install numpy pybind11 -y
 WORKDIR /llvm-project
 
 # reduce tools targets
-# RUN sed -i -e 's/create_llvm_tool_options/# create_llvm_tool_options/g' llvm/tools/CMakeLists.txt
+RUN sed -i -e 's/create_llvm_tool_options/# create_llvm_tool_options/g' llvm/tools/CMakeLists.txt
 
 RUN \
   cmake \

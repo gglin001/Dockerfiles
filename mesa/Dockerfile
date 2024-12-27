@@ -11,6 +11,7 @@ RUN micromamba install -y meson mako
 RUN micromamba install -y bison flex
 RUN micromamba install -y libdrm
 RUN micromamba install -y wayland wayland-protocols
+RUN micromamba install -y pyyaml
 
 WORKDIR /home
 RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.6/libclc-19.1.6.src.tar.xz && tar xf libclc-19.1.6.src.tar.xz

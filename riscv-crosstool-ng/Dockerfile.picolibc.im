@@ -10,6 +10,7 @@ SHELL ["bash", "-l", "-c"]
 
 WORKDIR /home/ct-ng-rv64
 
+# TODO: use `CT_PICOLIBC_SRC_CUSTOM=y`
 # gen `defconfig`
 COPY <<-EOT defconfig
 CT_CONFIG_VERSION="4"

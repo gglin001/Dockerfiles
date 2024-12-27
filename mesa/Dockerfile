@@ -13,8 +13,8 @@ RUN micromamba install -y libdrm
 RUN micromamba install -y wayland wayland-protocols
 
 WORKDIR /home
-RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.2/libclc-18.1.2.src.tar.xz && tar xf libclc-18.1.2.src.tar.xz
-WORKDIR /home/libclc-18.1.2.src
+RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.6/libclc-19.1.6.src.tar.xz && tar xf libclc-19.1.6.src.tar.xz
+WORKDIR /home/libclc-19.1.6.src
 RUN \
   cmake \
   -DCMAKE_INSTALL_PREFIX=/opt/libclc \
@@ -26,7 +26,7 @@ RUN \
   cmake --build $PWD/build --target install
 
 WORKDIR /home
-RUN git clone https://gitlab.freedesktop.org/mesa/mesa.git mesa --single-branch -b 24.0 --depth 1
+RUN git clone https://gitlab.freedesktop.org/mesa/mesa.git mesa --single-branch -b 24.3 --depth 1
 # RUN git clone https://gitlab.freedesktop.org/mesa/mesa.git mesa --single-branch -b main --depth 1
 WORKDIR /home/mesa
 RUN \

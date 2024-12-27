@@ -22,7 +22,7 @@ RUN \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_MODULE_PATH=$CONDA_PREFIX/lib/cmake/llvm:/opt/spirv-tools/lib/cmake/SPIRV-Tools \
   -DLLVM_SPIRV=/opt/llvm-spirv/bin/llvm-spirv \
-  -DLIBCLC_TARGETS_TO_BUILD="clspv-- clspv64-- spirv-mesa3d- spirv64-mesa3d-" \
+  -DLIBCLC_TARGETS_TO_BUILD="clspv--;clspv64--;spirv-mesa3d-;spirv64-mesa3d-" \
   -S$PWD -B$PWD/build -GNinja && \
   cmake --build $PWD/build --target install
 

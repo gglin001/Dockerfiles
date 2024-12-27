@@ -9,9 +9,13 @@ SHELL ["bash", "-l", "-c"]
 
 RUN micromamba install -y meson mako
 RUN micromamba install -y bison flex
-RUN micromamba install -y libdrm
-RUN micromamba install -y wayland wayland-protocols
 RUN micromamba install -y pyyaml
+RUN micromamba install -y libdrm
+# wayland
+RUN micromamba install -y wayland wayland-protocols
+# x11
+RUN micromamba install xorg-libx11 xorg-libxext xorg-libxfixes
+RUN micromamba install xorg-libxshmfence xorg-libxxf86vm xorg-libxrandr
 
 WORKDIR /home
 RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.6/libclc-19.1.6.src.tar.xz && tar xf libclc-19.1.6.src.tar.xz
@@ -36,19 +40,21 @@ RUN \
   meson setup --reconfigure build \
   --buildtype=release \
   -Dprefix=/opt/mesa \
-  -Dplatforms=wayland \
+  -Dplatforms=wayland,x11 \
   -Dopengl=true \
   -Dgles1=disabled \
   -Dgles2=disabled \
-  -Dglx=disabled \
+  -Dglx=dri \
   -Degl=disabled \
   -Dllvm=enabled \
+  -Dshared-llvm=disabled \
   -Ddraw-use-llvm=true \
-  -Dgallium-drivers="swrast" \
-  -Dgallium-opencl=standalone \
+  -Dgallium-drivers="llvmpipe" \
+  -Dgallium-opencl=icd \
   -Dgallium-rusticl=false \
-  -Dopencl-spirv=false \
+  -Dopencl-spirv=true \
   -Dvulkan-drivers="swrast" \
+  -Dstatic-libclc=all \
   -Dperfetto=false \
   -Dbuild-tests=false \
   -Denable-glcpp-tests=false && \

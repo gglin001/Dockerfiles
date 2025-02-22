@@ -1,0 +1,9 @@
+# docker build -t accel-sim-framework:12.8 -f accel-sim-framework/Dockerfile.12.8 .
+
+FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install wget curl -y
+

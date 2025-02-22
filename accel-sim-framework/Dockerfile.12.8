@@ -7,3 +7,30 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update
 RUN apt install wget curl -y
 
+# micromamba
+RUN curl -LO micro.mamba.pm/install.sh
+RUN bash install.sh
+RUN rm -f install.sh
+
+RUN sed -e '/[ -z "$PS1" ] && return/s/^/#/g' -i ~/.bashrc
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]
+RUN micromamba config append channels conda-forge
+RUN micromamba create -n pyenv python=3.12 -y
+
+# set default env
+RUN echo "micromamba activate pyenv" >> ~/.bashrc
+
+# make RUN commands use the new environment:
+SHELL ["bash", "-l", "-c"]
+
+# micromamba
+RUN micromamba install cmake ninja -y
+RUN micromamba install bash-completion -y
+RUN micromamba install git openssh -y
+RUN micromamba install clang-tools -y
+RUN micromamba install bison -y
+
+# apt
+RUN apt install bc -y
+RUN apt install libz-dev -y

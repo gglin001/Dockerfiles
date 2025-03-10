@@ -17,7 +17,7 @@ RUN micromamba config append channels conda-forge
 RUN micromamba create -n pyenv python=3.10 -y
 
 # set default env
-RUN echo "micromamba activate pyenv" >> ~/.bashrc
+# RUN echo "micromamba activate pyenv" >> ~/.bashrc
 
 # make RUN commands use the new environment:
 SHELL ["bash", "-l", "-c"]

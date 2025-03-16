@@ -30,6 +30,8 @@ RUN echo "micromamba activate pyenv" >> ~/.bashrc
 SHELL ["bash", "-l", "-c"]
 
 # micromamba
+RUN micromamba install bash-completion -y
+RUN micromamba install git openssh -y
 RUN micromamba install clang-tools -y
 
 # get clang headers from `clang` from conda
@@ -49,12 +51,68 @@ WORKDIR /opt/vllm_deps/requirements
 RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/requirements/build.txt
 RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/requirements/common.txt
 RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/requirements/cuda.txt
+# dev.txt
+RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/requirements/dev.txt
+RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/requirements/lint.txt
+RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/requirements/test.txt
 
 # --- only patch locally ---
 ENV https_proxy="" http_proxy=""
 
-RUN pip install -r build.txt
-RUN pip install -r cuda.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+  pip install -r build.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+  pip install -r cuda.txt
+# dev.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+  pip install -r lint.txt
+# test.txt
+RUN bash -c 'ARCH=$(uname -m); \
+  if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then \
+  echo "Detected ARM64 architecture"; \
+  # bitsandbytes requires x86, disable if building a test image on macos
+  sed -i "s/^bitsandbytes=/# bitsandbytes=/" test.txt; \
+  sed -i "s/^decord=/# decord=/" test.txt; \
+  # disable `nvidia-*` libs, TODO: fix it \
+  sed -i "s/^nvidia-/# nvidia-/" test.txt; \
+  # sed -i "s/^nvidia-cudnn-cu12==9.1.0.70/nvidia-cudnn-cu12==9.8.0.87/" test.txt \
+  sed -i "s/^runai-/# runai-/" test.txt; \
+  sed -i "s/^triton=/# triton=/" test.txt; \
+  elif [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then \
+  echo "Detected x86_64 architecture"; \
+  else \
+  echo "Unknown architecture: $ARCH"; \
+  fi'
+RUN --mount=type=cache,target=/root/.cache/pip \
+  pip install -r test.txt
+
+# --- only patch locally ---
+ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.internal:10800
+
+WORKDIR /opt/vllm_deps
+RUN git clone https://github.com/vllm-project/FlashMLA.git
+RUN git clone https://github.com/vllm-project/flash-attention.git
+RUN git clone https://github.com/nvidia/cutlass.git
+# TODO: updates commits if needed or use --args ?
+RUN pushd cutlass && git switch -d v3.8.0 && popd
+RUN pushd FlashMLA && git switch -d 575f7724b9762f265bbee5889df9c7d630801845 && popd
+RUN pushd flash-attention && git switch -d 9bfa9869829d8c593527eb34c5271d0090f7ccc9 && popd
+RUN pushd FlashMLA && git submodule update --init --depth 1 && popd
+RUN pushd flash-attention && git submodule update --init --depth 1 && popd
+
+# cache pre-commit hooks
+WORKDIR /opt/vllm_deps/pre-commit-config
+RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/.pre-commit-config.yaml
+RUN git init
+RUN pre-commit install-hooks -c .pre-commit-config.yaml
+
+WORKDIR /
+
+# essential tools
+RUN micromamba install fd-find ripgrep
+
+# TODO: oh-my-bash
+# RUN bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
 
 # --- only patch locally ---
 RUN unset http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY

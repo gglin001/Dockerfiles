@@ -1,6 +1,7 @@
 # docker build -t vllm:latest -f vllm/Dockerfile .
 
 # FROM nvcr.io/nvidia/pytorch:25.02-py3
+# FROM nvcr.io/nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive

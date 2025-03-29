@@ -7,6 +7,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update
 RUN apt install wget curl -y
 
+# TODO: use `--build-arg` ?
+# --- only patch locally ---
+# ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.internal:10800
+
 # micromamba
 RUN curl -LO micro.mamba.pm/install.sh
 RUN bash install.sh
@@ -34,3 +38,7 @@ RUN micromamba install bison -y
 # apt
 RUN apt install bc -y
 RUN apt install libz-dev -y
+
+# --- only patch locally ---
+# RUN unset http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY
+# RUN echo "unset http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY" >>~/.bashrc

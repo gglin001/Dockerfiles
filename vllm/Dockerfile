@@ -1,5 +1,5 @@
 # docker build -t vllm:latest -f vllm/Dockerfile .
-# docker build -t vllm:latest -f vllm/Dockerfile . --build-arg FETCH_DEPS=0 --build-arg PRE_COMMIT_INSTALL=1
+# docker build -t vllm:latest -f vllm/Dockerfile . --build-arg FETCH_DEPS=0 --build-arg PRE_COMMIT_INSTALL=0
 
 # FROM nvcr.io/nvidia/pytorch:25.02-py3
 # FROM nvcr.io/nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04

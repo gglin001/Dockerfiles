@@ -45,7 +45,9 @@ RUN CLANGD_VERSION=$(clangd --version | grep -Po '(?<=clangd version )[^.]+') &&
 RUN pip config set global.index-url 'https://mirrors.aliyun.com/pypi/simple/'
 
 # TODO: support building `sgl-kernel`
-RUN pip install sglang[srt]
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+  pip install sglang[srt]
 
 WORKDIR /
 

@@ -68,44 +68,42 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 RUN --mount=type=cache,target=/root/.cache/pip \
   pip install -r lint.txt
 # test.txt
-RUN bash -c 'ARCH=$(uname -m); \
+RUN ARCH=$(uname -m) && \
   if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then \
-  echo "Detected ARM64 architecture"; \
   # bitsandbytes requires x86, disable if building a test image on macos
-  sed -i "s/^bitsandbytes=/# bitsandbytes=/" test.txt; \
-  sed -i "s/^decord=/# decord=/" test.txt; \
-  # disable `nvidia-*` libs, TODO: fix it \
-  sed -i "s/^nvidia-/# nvidia-/" test.txt; \
-  # sed -i "s/^nvidia-cudnn-cu12==9.1.0.70/nvidia-cudnn-cu12==9.8.0.87/" test.txt \
-  sed -i "s/^runai-/# runai-/" test.txt; \
-  sed -i "s/^triton=/# triton=/" test.txt; \
-  elif [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then \
-  echo "Detected x86_64 architecture"; \
-  else \
-  echo "Unknown architecture: $ARCH"; \
-  fi'
+  sed -i "s/^bitsandbytes=/# bitsandbytes=/" test.txt \
+  && sed -i "s/^decord=/# decord=/" test.txt; \
+  # disable `nvidia-*` libs, TODO: fix it
+  && sed -i "s/^nvidia-/# nvidia-/" test.txt; \
+  # sed -i "s/^nvidia-cudnn-cu12==9.1.0.70/nvidia-cudnn-cu12==9.8.0.87/" test.txt
+  && sed -i "s/^runai-/# runai-/" test.txt; \
+  && sed -i "s/^triton=/# triton=/" test.txt ; fi
 RUN --mount=type=cache,target=/root/.cache/pip \
   pip install -r test.txt
 
 # --- only patch locally ---
 ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.internal:10800
 
+ARG FETCH_DEPS
 WORKDIR /opt/vllm_deps
-RUN git clone https://github.com/vllm-project/FlashMLA.git
-RUN git clone https://github.com/vllm-project/flash-attention.git
-RUN git clone https://github.com/nvidia/cutlass.git
-# TODO: updates commits if needed or use --args ?
-RUN pushd cutlass && git switch -d v3.8.0 && popd
-RUN pushd FlashMLA && git switch -d 575f7724b9762f265bbee5889df9c7d630801845 && popd
-RUN pushd flash-attention && git switch -d 9bfa9869829d8c593527eb34c5271d0090f7ccc9 && popd
-RUN pushd FlashMLA && git submodule update --init --depth 1 && popd
-RUN pushd flash-attention && git submodule update --init --depth 1 && popd
+RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
+  git clone https://github.com/nvidia/cutlass.git \
+  && git clone https://github.com/vllm-project/FlashMLA.git \
+  &&  git clone https://github.com/vllm-project/flash-attention.git \
+  && pushd cutlass && git switch -d v3.8.0 && popd \
+  && pushd FlashMLA && git switch -d 575f7724b9762f265bbee5889df9c7d630801845 && popd \
+  && pushd flash-attention && git switch -d 9bfa9869829d8c593527eb34c5271d0090f7ccc9 && popd \
+  && pushd FlashMLA && git submodule update --init --depth 1 && popd \
+  && pushd flash-attention && git submodule update --init --depth 1 && popd ; fi
 
+ARG PRE_COMMIT_INSTALL
+WORKDIR /tmp/pre-commit_hook
+COPY .pre-commit-config.yaml .pre-commit-config.yaml
 # cache pre-commit hooks
-WORKDIR /opt/vllm_deps/pre-commit-config
-RUN curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/.pre-commit-config.yaml
-RUN git init
-RUN pre-commit install-hooks -c .pre-commit-config.yaml
+RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
+  git init \
+  && pre-commit install-hooks -c .pre-commit-config.yaml \
+  && rm -rf /tmp/pre-commit_hook ; fi
 
 WORKDIR /
 

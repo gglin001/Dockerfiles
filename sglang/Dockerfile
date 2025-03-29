@@ -46,8 +46,9 @@ RUN pip config set global.index-url 'https://mirrors.aliyun.com/pypi/simple/'
 
 # TODO: support building `sgl-kernel`
 
+# TODO: install sglang[srt]
 RUN --mount=type=cache,target=/root/.cache/pip \
-  pip install sglang[srt]
+  pip install sglang[runtime_common]
 
 WORKDIR /
 

@@ -72,11 +72,11 @@ RUN ARCH=$(uname -m) && \
   if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then \
   # bitsandbytes requires x86, disable if building a test image on macos
   sed -i "s/^bitsandbytes=/# bitsandbytes=/" test.txt \
-  && sed -i "s/^decord=/# decord=/" test.txt; \
+  && sed -i "s/^decord=/# decord=/" test.txt \
   # disable `nvidia-*` libs, TODO: fix it
-  && sed -i "s/^nvidia-/# nvidia-/" test.txt; \
+  && sed -i "s/^nvidia-/# nvidia-/" test.txt \
   # sed -i "s/^nvidia-cudnn-cu12==9.1.0.70/nvidia-cudnn-cu12==9.8.0.87/" test.txt
-  && sed -i "s/^runai-/# runai-/" test.txt; \
+  && sed -i "s/^runai-/# runai-/" test.txt \
   && sed -i "s/^triton=/# triton=/" test.txt ; fi
 RUN --mount=type=cache,target=/root/.cache/pip \
   pip install -r test.txt
@@ -90,6 +90,7 @@ RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
   git clone https://github.com/nvidia/cutlass.git \
   && git clone https://github.com/vllm-project/FlashMLA.git \
   &&  git clone https://github.com/vllm-project/flash-attention.git \
+  # TODO: updates commits if needed or do it in container ?
   && pushd cutlass && git switch -d v3.8.0 && popd \
   && pushd FlashMLA && git switch -d 575f7724b9762f265bbee5889df9c7d630801845 && popd \
   && pushd flash-attention && git switch -d 9bfa9869829d8c593527eb34c5271d0090f7ccc9 && popd \
@@ -98,10 +99,10 @@ RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
 
 ARG PRE_COMMIT_INSTALL
 WORKDIR /tmp/pre-commit_hook
-COPY .pre-commit-config.yaml .pre-commit-config.yaml
 # cache pre-commit hooks
 RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
-  git init \
+  curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/.pre-commit-config.yaml \
+  && git init \
   && pre-commit install-hooks -c .pre-commit-config.yaml \
   && rm -rf /tmp/pre-commit_hook ; fi
 

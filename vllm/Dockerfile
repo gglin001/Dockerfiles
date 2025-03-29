@@ -1,4 +1,5 @@
 # docker build -t vllm:latest -f vllm/Dockerfile .
+# docker build -t vllm:latest -f vllm/Dockerfile . --build-arg FETCH_DEPS=0 --build-arg PRE_COMMIT_INSTALL=1
 
 # FROM nvcr.io/nvidia/pytorch:25.02-py3
 # FROM nvcr.io/nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
@@ -86,7 +87,7 @@ ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.inte
 
 ARG FETCH_DEPS
 WORKDIR /opt/vllm_deps
-RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
+RUN if [ "$FETCH_DEPS" = "1" ]; then \
   git clone https://github.com/nvidia/cutlass.git \
   && git clone https://github.com/vllm-project/FlashMLA.git \
   &&  git clone https://github.com/vllm-project/flash-attention.git \
@@ -100,7 +101,7 @@ RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
 ARG PRE_COMMIT_INSTALL
 WORKDIR /tmp/pre-commit_hook
 # cache pre-commit hooks
-RUN if [ "$FETCH_DEPS" -eq "1" ]; then \
+RUN if [ "$PRE_COMMIT_INSTALL" = "1" ]; then \
   curl -LO https://github.com/vllm-project/vllm/raw/refs/heads/main/.pre-commit-config.yaml \
   && git init \
   && pre-commit install-hooks -c .pre-commit-config.yaml \

@@ -11,7 +11,7 @@ RUN apt update
 RUN apt install curl -y
 
 # --- only patch locally ---
-ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.internal:10800
+# ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.internal:10800
 
 # micromamba
 RUN curl -LO micro.mamba.pm/install.sh
@@ -83,7 +83,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
   pip install -r test.txt
 
 # --- only patch locally ---
-ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.internal:10800
+# ENV https_proxy=http://host.lima.internal:10800 http_proxy=http://host.lima.internal:10800
 
 ARG FETCH_DEPS
 WORKDIR /opt/vllm_deps
